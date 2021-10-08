@@ -17,22 +17,26 @@ struct nodoLinea{
 typedef nodoPalabra * ListaPalabra;
 typedef nodoLinea * ListaLinea;
 
-ListaLinea lista = NULL;
 
 
-//UTILIZO NODO DUMMY;
-string InsertarLineaEnPosicion(int posicionLinea){
-    ListaLinea aux = lista;
+
+//UTILIZA NODO DUMMY;
+string InsertarLineaEnPosicion(ListaLinea & L , int posicionLinea){
+    ListaLinea aux = L;
     int countList = 0;
     while(aux->sig != NULL){
         countList ++;
         aux = aux->sig;
     }
+    aux = L;
     if(!(posicionLinea >=1 && posicionLinea <= countList + 1)){  return "ERROR.POSICION INVALIDA";  }
 
     ListaLinea newLine = new nodoLinea;
     newLine->sigPalabra = NULL;
-    for(int i=1; i < posicionLinea; i++){  aux = aux->sig;   }
+    for(int i=1; i < posicionLinea; i++){  
+        aux = aux->sig; 
+    }
+
     if(aux->sig == NULL){
         newLine->sig = NULL;
         aux->sig = newLine;
@@ -45,26 +49,17 @@ string InsertarLineaEnPosicion(int posicionLinea){
 
 
 
-
-
-
-
 int main()
-{ 
-   ListaLinea nodo1 = new nodoLinea;
-   nodo1->sigPalabra = NULL;
+{
+    ListaLinea lista = new nodoLinea;
+    lista->sig = NULL;
+    lista->sigPalabra = NULL;
 
-   ListaPalabra palabra1 =  new nodoPalabra;
-   palabra1->palabra = "Gato";
+     cout << InsertarLineaEnPosicion(lista, 1);
+     cout << InsertarLineaEnPosicion(lista,2);
+     cout << InsertarLineaEnPosicion(lista,0);
+    
+  
 
-   nodo1->sigPalabra = palabra1;
 
-   ListaPalabra palabra2 = new nodoPalabra;
-   palabra2->palabra = "Perro";
-   palabra2->sigPalabra = NULL;
-
-   palabra1->sigPalabra = palabra2;
-
-   cout << MAX_CANT_PALABRAS;
-   
 }
