@@ -2,7 +2,7 @@
 
 using namespace std;
 
-
+#define MAX_CANT_PALABRAS  3;
 struct nodoPalabra{
     string palabra;
     nodoPalabra * sigPalabra;
@@ -20,10 +20,31 @@ typedef nodoLinea * ListaLinea;
 ListaLinea lista = NULL;
 
 
-
+//UTILIZO NODO DUMMY;
 string InsertarLineaEnPosicion(int posicionLinea){
-    return "NO IMPLEMENTADA";
+    ListaLinea aux = lista;
+    int countList = 0;
+    while(aux->sig != NULL){
+        countList ++;
+        aux = aux->sig;
+    }
+    if(!(posicionLinea >=1 && posicionLinea <= countList + 1)){  return "ERROR.POSICION INVALIDA";  }
+
+    ListaLinea newLine = new nodoLinea;
+    newLine->sigPalabra = NULL;
+    for(int i=1; i < posicionLinea; i++){  aux = aux->sig;   }
+    if(aux->sig == NULL){
+        newLine->sig = NULL;
+        aux->sig = newLine;
+    }else{
+        newLine->sig = aux->sig;
+        aux->sig = newLine;
+    }
+    return "OK.TODO CORRECTO";
 }
+
+
+
 
 
 
@@ -44,5 +65,6 @@ int main()
 
    palabra1->sigPalabra = palabra2;
 
-
+   cout << MAX_CANT_PALABRAS;
+   
 }
