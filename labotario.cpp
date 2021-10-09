@@ -18,8 +18,28 @@ typedef nodoPalabra * ListaPalabra;
 typedef nodoLinea * ListaLinea;
 
 
+//Insertar linea al final
+string insertar_linea_al_final (ListaLinea & L) {
+    ListaLinea newline = new nodoLinea;
+    if (L->sig == NULL) {
+        newline->sig = NULL;
+        newline->sigPalabra = NULL;
+        L->sig = newline;
+        return "Bien";
+    }
+    else {
+        ListaLinea aux = L;
+        while (aux->sig != NULL) {
+            aux = aux->sig;
+        }  
+        newline->sig = NULL;
+        newline->sigPalabra = NULL;
+        aux->sig = newline;
+    }
+    return "OK OK";
+}
 
-
+//Insertar nueva linea en posicion n
 //UTILIZA NODO DUMMY;
 string InsertarLineaEnPosicion(ListaLinea & L , int posicionLinea){
     ListaLinea aux = L;
@@ -55,11 +75,10 @@ int main()
     lista->sig = NULL;
     lista->sigPalabra = NULL;
 
-     cout << InsertarLineaEnPosicion(lista, 1);
-     cout << InsertarLineaEnPosicion(lista,2);
-     cout << InsertarLineaEnPosicion(lista,0);
-    
-  
-
-
+    cout << insertar_linea_al_final(lista) << endl;
+    cout << InsertarLineaEnPosicion(lista, 1) << endl;
+    cout << InsertarLineaEnPosicion(lista,2) << endl;
+    cout << InsertarLineaEnPosicion(lista,0) << endl;
+    cout << insertar_linea_al_final(lista) << endl;
+    cout << insertar_linea_al_final(lista) << endl;
 }
