@@ -17,9 +17,17 @@ struct nodoLinea{
 typedef nodoPalabra * ListaPalabra;
 typedef nodoLinea * ListaLinea;
 
+ListaLinea L = new nodoLinea;
+
+
+void inicializarDummy(){
+    L->sig = NULL;
+    L->sigPalabra = NULL;
+}
+
 
 //Insertar linea al final
-string insertar_linea_al_final (ListaLinea & L) {
+string insertar_linea_al_final () {
     ListaLinea newline = new nodoLinea;
     if (L->sig == NULL) {
         newline->sig = NULL;
@@ -41,7 +49,7 @@ string insertar_linea_al_final (ListaLinea & L) {
 
 //Insertar nueva linea en posicion n
 //UTILIZA NODO DUMMY;
-string InsertarLineaEnPosicion(ListaLinea & L , int posicionLinea){
+string InsertarLineaEnPosicion(int posicionLinea){
     ListaLinea aux = L;
     int countList = 0;
     while(aux->sig != NULL){
@@ -71,14 +79,15 @@ string InsertarLineaEnPosicion(ListaLinea & L , int posicionLinea){
 
 int main()
 {
-    ListaLinea lista = new nodoLinea;
-    lista->sig = NULL;
-    lista->sigPalabra = NULL;
+    inicializarDummy();
 
-    cout << insertar_linea_al_final(lista) << endl;
-    cout << InsertarLineaEnPosicion(lista, 1) << endl;
-    cout << InsertarLineaEnPosicion(lista,2) << endl;
-    cout << InsertarLineaEnPosicion(lista,0) << endl;
-    cout << insertar_linea_al_final(lista) << endl;
-    cout << insertar_linea_al_final(lista) << endl;
+    cout << L->sig;
+
+    cout << insertar_linea_al_final() << endl;
+    cout << InsertarLineaEnPosicion(1) << endl;
+    cout << InsertarLineaEnPosicion(2) << endl;
+    cout << InsertarLineaEnPosicion(0) << endl;
+    cout << insertar_linea_al_final() << endl;
+    cout << insertar_linea_al_final() << endl;
+    cout << InsertarLineaEnPosicion(2) << endl;
 }
