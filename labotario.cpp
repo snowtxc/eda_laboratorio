@@ -3,13 +3,14 @@
 using namespace std;
 
 #define MAX_CANT_PALABRAS  3;
+
 struct nodoPalabra{
     string palabra;
     nodoPalabra * sigPalabra;
 };
 
-
 struct nodoLinea{
+    unsigned cant_pal = 0;
     nodoLinea * sig;
     nodoPalabra * sigPalabra;
 };
@@ -20,12 +21,10 @@ typedef nodoLinea * ListaLinea;
 ListaLinea L = new nodoLinea;
 //ListaLinea L = NULL;
 
-
 void inicializarDummy(){
     L->sig = NULL;
     L->sigPalabra = NULL;
 }
-
 
 //Insertar linea al final
 string insertar_linea_al_final () {
@@ -67,7 +66,6 @@ string InsertarLineaEnPosicion(int posicionLinea){
     for(int i=1; i < posicionLinea; i++){  
         aux = aux->sig; 
     }
-
     if(aux->sig == NULL){
         newLine->sig = NULL;
         aux->sig = newLine;
@@ -79,8 +77,6 @@ string InsertarLineaEnPosicion(int posicionLinea){
 }
 
 //Imprimir texto
-
-
 void imprimir () {
     int num_linea = 1;
     ListaLinea aux = L;
@@ -99,14 +95,9 @@ void imprimir () {
     }
 }
 
-
-
-
 int main()
 {
     inicializarDummy();
-
-    //cout << L->sig;
 
     insertar_linea_al_final() ;
     InsertarLineaEnPosicion(1);
@@ -115,5 +106,7 @@ int main()
     insertar_linea_al_final() ;
     insertar_linea_al_final() ;
     InsertarLineaEnPosicion(2) ;
+
     imprimir();
+    //cout << L->sig->cant_pal;
 }
