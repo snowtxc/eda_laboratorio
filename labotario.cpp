@@ -18,6 +18,7 @@ typedef nodoPalabra * ListaPalabra;
 typedef nodoLinea * ListaLinea;
 
 ListaLinea L = new nodoLinea;
+//ListaLinea L = NULL;
 
 
 void inicializarDummy(){
@@ -29,9 +30,11 @@ void inicializarDummy(){
 //Insertar linea al final
 string insertar_linea_al_final () {
     ListaLinea newline = new nodoLinea;
+    newline->sig = NULL;
+    newline->sigPalabra = new nodoPalabra;
+    newline->sigPalabra->sigPalabra = NULL;
     if (L->sig == NULL) {
-        newline->sig = NULL;
-        newline->sigPalabra = NULL;
+        
         L->sig = newline;
         return "Bien";
     }
@@ -40,8 +43,6 @@ string insertar_linea_al_final () {
         while (aux->sig != NULL) {
             aux = aux->sig;
         }  
-        newline->sig = NULL;
-        newline->sigPalabra = NULL;
         aux->sig = newline;
     }
     return "OK OK";
@@ -60,6 +61,8 @@ string InsertarLineaEnPosicion(int posicionLinea){
     if(!(posicionLinea >=1 && posicionLinea <= countList + 1)){  return "ERROR.POSICION INVALIDA";  }
 
     ListaLinea newLine = new nodoLinea;
+    newLine->sigPalabra = new nodoPalabra;
+    newLine->sigPalabra->sigPalabra = NULL;
     newLine->sigPalabra = NULL;
     for(int i=1; i < posicionLinea; i++){  
         aux = aux->sig; 
@@ -75,19 +78,42 @@ string InsertarLineaEnPosicion(int posicionLinea){
     return "OK.TODO CORRECTO";
 }
 
+//Imprimir texto
+
+
+void imprimir () {
+    int num_linea = 1;
+    ListaLinea aux = L;
+    while (aux->sig != NULL) {
+        cout << num_linea << ":";
+        if (aux->sigPalabra != NULL){
+            ListaPalabra auxp = aux->sigPalabra;
+            while (auxp->sigPalabra != NULL){
+                cout << auxp->sigPalabra->palabra << " ";
+                auxp = auxp->sigPalabra;
+            }
+        }
+        cout << endl;
+        num_linea ++;
+        aux = aux->sig;
+    }
+}
+
+
 
 
 int main()
 {
     inicializarDummy();
 
-    cout << L->sig;
+    //cout << L->sig;
 
-    cout << insertar_linea_al_final() << endl;
-    cout << InsertarLineaEnPosicion(1) << endl;
-    cout << InsertarLineaEnPosicion(2) << endl;
-    cout << InsertarLineaEnPosicion(0) << endl;
-    cout << insertar_linea_al_final() << endl;
-    cout << insertar_linea_al_final() << endl;
-    cout << InsertarLineaEnPosicion(2) << endl;
+    insertar_linea_al_final() ;
+    InsertarLineaEnPosicion(1);
+    InsertarLineaEnPosicion(2) ;
+    //InsertarLineaEnPosicion(0) ;
+    insertar_linea_al_final() ;
+    insertar_linea_al_final() ;
+    InsertarLineaEnPosicion(2) ;
+    imprimir();
 }
