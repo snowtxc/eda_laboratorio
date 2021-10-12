@@ -2,7 +2,7 @@
 
 using namespace std;
 
-#define MAX_CANT_PALABRAS  3;
+const int MAX_CANT_PALABRAS =  3;
 
 struct nodoPalabra{
     string palabra;
@@ -22,9 +22,36 @@ ListaLinea L = new nodoLinea;
 //ListaLinea L = NULL;
 
 void inicializarDummy(){
+    L->cant_pal = 0;
     L->sig = NULL;
     L->sigPalabra = NULL;
 }
+
+
+
+int getCantNodoLinea(){
+    ListaLinea aux = L;
+    int countList = 0;
+    while (aux->sig != NULL)
+    {
+        countList++;
+        aux = aux->sig;
+    }
+    return countList;
+}
+
+int getCantNodoPalabra(ListaPalabra lp){
+     int cantPal = 0;
+     while (lp->sigPalabra != NULL){
+        cantPal++;
+        lp = lp->sigPalabra;
+     }
+
+     return cantPal;
+     
+}
+
+
 
 //Insertar linea al final
 string insertar_linea_al_final () {
@@ -50,19 +77,13 @@ string insertar_linea_al_final () {
 //Insertar nueva linea en posicion n
 //UTILIZA NODO DUMMY;
 string InsertarLineaEnPosicion(int posicionLinea){
+    if(!(posicionLinea >=1 && posicionLinea <= getCantNodoLinea() + 1)){  return "ERROR.POSICION INVALIDA";  }
+
     ListaLinea aux = L;
-    int countList = 0;
-    while(aux->sig != NULL){
-        countList ++;
-        aux = aux->sig;
-    }
-    aux = L;
-    if(!(posicionLinea >=1 && posicionLinea <= countList + 1)){  return "ERROR.POSICION INVALIDA";  }
 
     ListaLinea newLine = new nodoLinea;
     newLine->sigPalabra = new nodoPalabra;
     newLine->sigPalabra->sigPalabra = NULL;
-    newLine->sigPalabra = NULL;
     for(int i=1; i < posicionLinea; i++){  
         aux = aux->sig; 
     }
@@ -95,17 +116,56 @@ void imprimir () {
     }
 }
 
+
+//SIN TERMINAR
+string InsertarPalabra(int posicionLinea, int posicionPalabra, string PALABRA){
+    if(L->sig == NULL){ return "ERROR POSICION DE LINEA INVALIDA"; }
+
+    if (!(posicionLinea >= 1 && posicionLinea <= getCantNodoLinea() ))
+    {
+        return "ERROR.POSICION INVALIDA";
+    }
+ 
+    ListaLinea aux = L;
+
+    for (int i = 1; i <= posicionLinea   ; i++)
+    {   
+        aux = aux->sig;
+    }
+    cout << aux->cant_pal;
+    ListaPalabra auxlp = aux->sigPalabra;  //NODO DUMMY
+    int cantPal = getCantNodoPalabra(auxlp);
+
+    if(cantPal < MAX_CANT_PALABRAS){
+        if (!(posicionPalabra >= 1 && posicionPalabra <= cantPal + 1)){
+            return "ERROR.POSICION DE PALABRA INVALIDA.";
+        }
+        for (int i = 1; i < posicionPalabra; i++){  auxlp = auxlp->sigPalabra; }
+
+        ListaPalabra nuevaPalabra = new nodoPalabra;
+        nuevaPalabra->palabra = PALABRA;
+        nuevaPalabra->sigPalabra = auxlp->sigPalabra;
+        auxlp->sigPalabra = nuevaPalabra;
+        return  "INSERTADA CORRECTAMENTE";
+        
+    }else{
+        return  "LO SENTIMOS LA CANTIDAD DE PALABRA DE ESTA LINEA ESTA LLENA";
+
+    }
+
+}
+
 int main()
 {
     inicializarDummy();
 
     insertar_linea_al_final() ;
-    InsertarLineaEnPosicion(1);
-    InsertarLineaEnPosicion(2) ;
     //InsertarLineaEnPosicion(0) ;
     insertar_linea_al_final() ;
     insertar_linea_al_final() ;
-    InsertarLineaEnPosicion(2) ;
+
+
+    cout << InsertarPalabra(1,1,"Hola"); 
 
     imprimir();
     //cout << L->sig->cant_pal;
