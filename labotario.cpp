@@ -21,13 +21,33 @@ typedef nodoLinea * ListaLinea;
 ListaLinea L = new nodoLinea;
 //ListaLinea L = NULL;
 
-void inicializarDummy(){
+
+
+
+
+/*** FUNCIONES REQUERIDAS ***/
+
+string insertar_linea_al_final();
+string InsertarLineaEnPosicion(int);
+void imprimir();
+string InsertaPalabra();
+
+
+//** FUNCIONES ADICIONALES  ***/
+
+void inicializarDummy();
+int  getCantNodoLinea();
+int  getCantNodoPalabra();
+
+
+
+
+void  inicializarDummy()
+{
     L->cant_pal = 0;
     L->sig = NULL;
     L->sigPalabra = NULL;
 }
-
-
 
 int getCantNodoLinea(){
     ListaLinea aux = L;
@@ -47,9 +67,9 @@ int getCantNodoPalabra(ListaPalabra lp){
         lp = lp->sigPalabra;
      }
 
-     return cantPal;
-     
+     return cantPal; 
 }
+
 
 
 
@@ -103,8 +123,8 @@ void imprimir () {
     ListaLinea aux = L;
     while (aux->sig != NULL) {
         cout << num_linea << ":";
-        if (aux->sigPalabra != NULL){
-            ListaPalabra auxp = aux->sigPalabra;
+        if (aux->sig->sigPalabra != NULL){
+            ListaPalabra auxp = aux->sig->sigPalabra;
             while (auxp->sigPalabra != NULL){
                 cout << auxp->sigPalabra->palabra << " ";
                 auxp = auxp->sigPalabra;
@@ -125,34 +145,41 @@ string InsertarPalabra(int posicionLinea, int posicionPalabra, string PALABRA){
     {
         return "ERROR.POSICION INVALIDA";
     }
- 
-    ListaLinea aux = L;
 
-    for (int i = 1; i <= posicionLinea   ; i++)
-    {   
+    ListaLinea aux = L;
+    for (int i = 1; i < posicionLinea   ; i++)
+    {
         aux = aux->sig;
     }
-    cout << aux->cant_pal;
-    ListaPalabra auxlp = aux->sigPalabra;  //NODO DUMMY
-    int cantPal = getCantNodoPalabra(auxlp);
 
-    if(cantPal < MAX_CANT_PALABRAS){
-        if (!(posicionPalabra >= 1 && posicionPalabra <= cantPal + 1)){
-            return "ERROR.POSICION DE PALABRA INVALIDA.";
+    
+    while (aux->sig != NULL)
+    {
+        ListaPalabra auxlp = aux->sig->sigPalabra; //NODO DUMMY
+        int cantPal = getCantNodoPalabra(auxlp);
+
+        if (cantPal < MAX_CANT_PALABRAS)
+        {
+            if (!(posicionPalabra >= 1 && posicionPalabra <= cantPal + 1))
+            {
+                return "ERROR.POSICION DE PALABRA INVALIDA.";
+            }
+            for (int i = 1; i < posicionPalabra; i++)
+            {
+                auxlp = auxlp->sigPalabra;
+            }
+            ListaPalabra nuevaPalabra = new nodoPalabra;
+            nuevaPalabra->palabra = PALABRA;
+            nuevaPalabra->sigPalabra = auxlp->sigPalabra;
+            auxlp->sigPalabra = nuevaPalabra;
+            return "INSERTADA CORRECTAMENTE"; 
         }
-        for (int i = 1; i < posicionPalabra; i++){  auxlp = auxlp->sigPalabra; }
-
-        ListaPalabra nuevaPalabra = new nodoPalabra;
-        nuevaPalabra->palabra = PALABRA;
-        nuevaPalabra->sigPalabra = auxlp->sigPalabra;
-        auxlp->sigPalabra = nuevaPalabra;
-        return  "INSERTADA CORRECTAMENTE";
-        
-    }else{
-        return  "LO SENTIMOS LA CANTIDAD DE PALABRA DE ESTA LINEA ESTA LLENA";
-
+        else
+        {  
+            aux = aux->sig;
+        }
     }
-
+    return "NO QUEDA ESPACIO PARA ESA PALABRA!";
 }
 
 int main()
@@ -164,8 +191,19 @@ int main()
     insertar_linea_al_final() ;
     insertar_linea_al_final() ;
 
-
+ 
     cout << InsertarPalabra(1,1,"Hola"); 
+    cout  <<  InsertarPalabra(1,2,"Perro");
+    cout  << InsertarPalabra(1,1,"Gato");
+    cout  << InsertarPalabra(1,1,"Gato");
+    cout  << InsertarPalabra(1,1, "Gatito");
+    cout << InsertarPalabra(1, 1, "Gatito");
+    cout << InsertarPalabra(1, 1, "Gatito");
+    cout << InsertarPalabra(1, 1, "Gatito");
+    cout << InsertarPalabra(1, 1, "Gatito");
+    cout << InsertarPalabra(1, 1, "Gatito");
+
+    cout << endl; 
 
     imprimir();
     //cout << L->sig->cant_pal;
