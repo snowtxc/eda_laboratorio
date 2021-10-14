@@ -31,6 +31,7 @@ string insertar_linea_al_final();
 string InsertarLineaEnPosicion(int);
 void imprimir();
 string InsertaPalabra();
+string Borrar_linea_segun_posicion(int);
 
 
 //** FUNCIONES ADICIONALES  ***/
@@ -69,9 +70,6 @@ int getCantNodoPalabra(ListaPalabra lp){
 
      return cantPal; 
 }
-
-
-
 
 //Insertar linea al final
 string insertar_linea_al_final () {
@@ -182,9 +180,69 @@ string InsertarPalabra(int posicionLinea, int posicionPalabra, string PALABRA){
     return "NO QUEDA ESPACIO PARA ESA PALABRA!";
 }
 
-int main()
-{
+//int contar_lineas() {
+//    int lineas = 0;
+//    ListaLinea aux = L;
+//    aux = aux->sig;
+//    if (aux->sig != NULL){
+//        while (aux != NULL) {
+//            lineas ++;
+//            aux = aux->sig;
+//        }
+//    }
+//    return lineas;
+//}
+
+//Borrar linea segun posicion
+string Borrar_linea(int pos) {
+    int cant = getCantNodoLinea();
+    if (cant == 0 || cant < pos) {
+        return "La linea no existe";
+    }
+    else {
+       ListaLinea aux = L;
+        for (int i = 1; i < pos; i++) {
+        aux = aux->sig;
+        }
+        ListaLinea borrar = aux->sig;
+        ListaPalabra bpal = aux->sig->sigPalabra;
+        while (bpal->sigPalabra != NULL) {
+            ListaPalabra borrar_palabra = bpal->sigPalabra;
+            bpal->sigPalabra = borrar_palabra->sigPalabra;
+            delete borrar_palabra;
+        }
+        borrar->sigPalabra = NULL;
+        delete bpal;
+        aux->sig = borrar->sig;
+        delete borrar; 
+        return "borrado";
+    }
+}
+
+void test_leo () {
     inicializarDummy();
+
+    insertar_linea_al_final();
+    InsertarLineaEnPosicion(2);
+    InsertarLineaEnPosicion(3);
+    insertar_linea_al_final();
+    insertar_linea_al_final();
+    InsertarPalabra(1,1,"Hola"); 
+    InsertarPalabra(1,2,"Perro");
+    InsertarPalabra(1,1,"Gato");
+    InsertarPalabra(1,1,"Gato");
+    InsertarPalabra(1,1, "Gatito"); 
+    InsertarPalabra(1,1, "Gatito");
+    imprimir();
+    cout << endl;
+    Borrar_linea(2);
+    imprimir();
+
+    //cout << contar_lineas();
+}
+
+void test_rodri(){
+     inicializarDummy();
 
     insertar_linea_al_final() ;
     //InsertarLineaEnPosicion(0) ;
@@ -207,4 +265,9 @@ int main()
 
     imprimir();
     //cout << L->sig->cant_pal;
+}
+
+int main()
+{
+   test_leo();
 }
