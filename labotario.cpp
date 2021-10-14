@@ -136,32 +136,34 @@ void imprimir () {
 
 
 //SIN TERMINAR
-string InsertarPalabra(int posicionLinea, int posicionPalabra, string PALABRA){
-    if(L->sig == NULL){ return "ERROR POSICION DE LINEA INVALIDA"; }
+string InsertarPalabra(int posicionLinea, int posicionPalabra, string PALABRA)
+{
+    if (L->sig == NULL)
+    {
+        return "ERROR POSICION DE LINEA INVALIDA.LA LINEA ESTA VACIA";
+    }
 
-    if (!(posicionLinea >= 1 && posicionLinea <= getCantNodoLinea() ))
+    if (!(posicionLinea >= 1 && posicionLinea <= getCantNodoLinea()))
     {
         return "ERROR.POSICION INVALIDA";
     }
-
+    if (posicionPalabra > MAX_CANT_PALABRAS)
+    {
+        return "POSICION INVALIDA!,LA POSICION EXCEDE LA CANTIDAD DE PALABRAS POR LINEAS";
+    }
     ListaLinea aux = L;
-    for (int i = 1; i < posicionLinea   ; i++)
+    for (int i = 1; i < posicionLinea; i++)
     {
         aux = aux->sig;
     }
-
-    
+    ListaPalabra ant = NULL; //Almacenamos SI ES REQUERIDO EL ultimo nodo de la linea anterior ,para luego insertarlo en el primero de la siguiente.
     while (aux->sig != NULL)
     {
-        ListaPalabra auxlp = aux->sig->sigPalabra; //NODO DUMMY
-        int cantPal = getCantNodoPalabra(auxlp);
+        ListaPalabra auxlp = aux->sig->sigPalabra; //LISTA PALABRAS DE LA LINEA
+        int cantPal = getCantNodoPalabra(auxlp);   //Cantidad de palabras en la linea
 
-        if (cantPal < MAX_CANT_PALABRAS)
+        if (cantPal < MAX_CANT_PALABRAS && ant == NULL) //SI el nodo tiene menos palabras que el anterior
         {
-            if (!(posicionPalabra >= 1 && posicionPalabra <= cantPal + 1))
-            {
-                return "ERROR.POSICION DE PALABRA INVALIDA.";
-            }
             for (int i = 1; i < posicionPalabra; i++)
             {
                 auxlp = auxlp->sigPalabra;
@@ -170,14 +172,47 @@ string InsertarPalabra(int posicionLinea, int posicionPalabra, string PALABRA){
             nuevaPalabra->palabra = PALABRA;
             nuevaPalabra->sigPalabra = auxlp->sigPalabra;
             auxlp->sigPalabra = nuevaPalabra;
-            return "INSERTADA CORRECTAMENTE"; 
+            return "INSERTADA CORRECTAMENTE";
+        }
+        else if (cantPal < MAX_CANT_PALABRAS && ant != NULL)
+        {
+            ant->sigPalabra = auxlp->sigPalabra;
+            auxlp->sigPalabra = ant;
+            return "";
         }
         else
-        {  
+        {
+
+            if (ant != NULL)
+            {
+                ant->sigPalabra = auxlp->sigPalabra;
+                auxlp->sigPalabra = ant;
+            }
+            else
+            {
+                for (int i = 1; i < posicionPalabra; i++)
+                {
+                    auxlp = auxlp->sigPalabra;
+                }
+                ListaPalabra nuevaPalabra = new nodoPalabra;
+                nuevaPalabra->palabra = PALABRA;
+                nuevaPalabra->sigPalabra = auxlp->sigPalabra;
+                auxlp->sigPalabra = nuevaPalabra;
+
+                ListaPalabra auxlp2 = auxlp;
+                while (auxlp2->sigPalabra->sigPalabra != NULL)
+                {
+                    auxlp2 = auxlp2->sigPalabra;
+                }
+                ListaPalabra lastNodo = new nodoPalabra;
+                lastNodo->palabra = auxlp2->sigPalabra->palabra;
+                auxlp2->sigPalabra = NULL;
+                ant = lastNodo;
+            }
+
             aux = aux->sig;
         }
     }
-    return "NO QUEDA ESPACIO PARA ESA PALABRA!";
 }
 
 //int contar_lineas() {
@@ -256,10 +291,8 @@ void test_rodri(){
     cout  << InsertarPalabra(1,1,"Gato");
     cout  << InsertarPalabra(1,1, "Gatito");
     cout << InsertarPalabra(1, 1, "Gatito");
-    cout << InsertarPalabra(1, 1, "Gatito");
-    cout << InsertarPalabra(1, 1, "Gatito");
-    cout << InsertarPalabra(1, 1, "Gatito");
-    cout << InsertarPalabra(1, 1, "Gatito");
+
+   
 
     cout << endl; 
 
@@ -269,5 +302,5 @@ void test_rodri(){
 
 int main()
 {
-   test_leo();
+   test_rodri();
 }
