@@ -19,20 +19,27 @@ typedef nodoPalabra * ListaPalabra;
 typedef nodoLinea * ListaLinea;
 
 ListaLinea L = new nodoLinea;
-//ListaLinea L = NULL;
 
 
+enum TipoRetorno{
+    OK,
+    ERROR,
+    NO_IMPLEMENTADA
+};
+
+typedef unsigned int Posicion;
 
 
 
 /*** FUNCIONES REQUERIDAS ***/
 
-string insertar_linea_al_final();
-string InsertarLineaEnPosicion(int);
+TipoRetorno insertar_linea_al_final();
+TipoRetorno InsertarLineaEnPosicion(int);
 void imprimir();
-string InsertaPalabra();
-string Borrar_linea_segun_posicion(int);
-string BorrarTodo();
+TipoRetorno InsertaPalabra();
+TipoRetorno Borrar_linea_segun_posicion(int);
+TipoRetorno BorrarTodo();
+TipoRetorno BorrarOcurrenciasPalabraEnLinea(int,string);
 void ImprimirLinea();
 
 
@@ -43,7 +50,10 @@ void ImprimirLinea();
 void inicializarDummy();
 int  getCantNodoLinea();
 int  getCantNodoPalabra();
-
+ListaLinea createLine();
+ListaPalabra createPalabra();
+ListaLinea buscarLine(int);
+ListaPalabra buscarPalabra();
 
 
 
@@ -75,16 +85,62 @@ int getCantNodoPalabra(ListaPalabra lp){
      return cantPal; 
 }
 
+ListaLinea findLine(int posicionLinea){
+    if (!(posicionLinea >= 1 && posicionLinea <= getCantNodoLinea() + 1))
+    {
+        return NULL;
+    }    
+    ListaLinea aux = L;
+    for (int i = 1; i < posicionLinea; i++)
+    {
+        aux = aux->sig;
+    }
+
+    return aux;
+}
+
+ListaLinea findPalabra(ListaPalabra bpal , int posicionPal)
+{
+    if (!(posicionPal >= 1 && posicionPal <= getCantNodoPalabra(bpal) + 1))
+    {
+        return NULL;
+    }
+    ListaPalabra aux = bpal;
+    for (int i = 1; i < posicionPal; i++)
+    {
+        aux = aux->sig;
+    }
+    return aux;
+}
+
+ListaLinea createLine()
+{
+    ListaLinea newline = new nodoLinea;
+    newline->sig = NULL;
+    newline->sigPalabra = new nodoPalabra;
+    newline->sigPalabra->sigPalabra = NULL;
+    return newline;
+}
+
+ListaLinea createPalabra(string palabra)
+{
+    ListaPalabra nodoPalabra = new nodoPalabra;
+    nodoPalabra->palabra = palabra;
+    nodoPalabra->sigPalabra = NULL;
+    return nodoPalabra;
+}
+
+
+
 //Insertar linea al final
-string insertar_linea_al_final () {
+TipoRetorno insertar_linea_al_final () {
     ListaLinea newline = new nodoLinea;
     newline->sig = NULL;
     newline->sigPalabra = new nodoPalabra;
     newline->sigPalabra->sigPalabra = NULL;
     if (L->sig == NULL) {
-        
         L->sig = newline;
-        return "Bien";
+        return OK;
     }
     else {
         ListaLinea aux = L;
@@ -93,19 +149,24 @@ string insertar_linea_al_final () {
         }  
         aux->sig = newline;
     }
-    return "OK OK";
+    return OK;
 }
+
+
+
+
 
 //Insertar nueva linea en posicion n
 //UTILIZA NODO DUMMY;
-string InsertarLineaEnPosicion(int posicionLinea){
-    if(!(posicionLinea >=1 && posicionLinea <= getCantNodoLinea() + 1)){  return "ERROR.POSICION INVALIDA";  }
+
+TipoRetorno InsertarLineaEnPosicion(int posicionLinea){
+    if(!(posicionLinea >=1 && posicionLinea <= getCantNodoLinea() + 1)){  return ERROR;  }
 
     ListaLinea aux = L;
-
     ListaLinea newLine = new nodoLinea;
     newLine->sigPalabra = new nodoPalabra;
     newLine->sigPalabra->sigPalabra = NULL;
+
     for(int i=1; i < posicionLinea; i++){  
         aux = aux->sig; 
     }
@@ -116,8 +177,10 @@ string InsertarLineaEnPosicion(int posicionLinea){
         newLine->sig = aux->sig;
         aux->sig = newLine;
     }
-    return "OK.TODO CORRECTO";
+    return OK;
 }
+
+
 
 //Imprimir texto
 void imprimir () {
@@ -140,20 +203,20 @@ void imprimir () {
 
 
 //SIN TERMINAR
-string InsertarPalabra(int posicionLinea, int posicionPalabra, string PALABRA)
+TipoRetorno InsertarPalabra(int posicionLinea, int posicionPalabra, string PALABRA)
 {
     if (L->sig == NULL)
     {
-        return "ERROR POSICION DE LINEA INVALIDA.LA LINEA ESTA VACIA";
+        return ERROR;
     }
 
     if (!(posicionLinea >= 1 && posicionLinea <= getCantNodoLinea()))
     {
-        return "ERROR.POSICION INVALIDA";
+        return ERROR;
     }
     if (posicionPalabra > MAX_CANT_PALABRAS)
     {
-        return "POSICION INVALIDA!,LA POSICION EXCEDE LA CANTIDAD DE PALABRAS POR LINEAS";
+        return ERROR;
     }
     ListaLinea aux = L;
     for (int i = 1; i < posicionLinea; i++)
@@ -176,13 +239,13 @@ string InsertarPalabra(int posicionLinea, int posicionPalabra, string PALABRA)
             nuevaPalabra->palabra = PALABRA;
             nuevaPalabra->sigPalabra = auxlp->sigPalabra;
             auxlp->sigPalabra = nuevaPalabra;
-            return "INSERTADA CORRECTAMENTE";
+            return OK;
         }
         else if (cantPal < MAX_CANT_PALABRAS && ant != NULL)
         {
             ant->sigPalabra = auxlp->sigPalabra;
             auxlp->sigPalabra = ant;
-            return "";
+            return OK;
         }
         else
         {
@@ -222,10 +285,10 @@ string InsertarPalabra(int posicionLinea, int posicionPalabra, string PALABRA)
 
 
 //Borrar linea segun posicion
-string Borrar_linea(int pos) {
+TipoRetorno Borrar_linea(int pos) {
     int cant = getCantNodoLinea();
     if (cant == 0 || cant < pos) {
-        return "La linea no existe";
+        return ERROR;
     }
     else {
        ListaLinea aux = L;
@@ -243,12 +306,12 @@ string Borrar_linea(int pos) {
         delete bpal;
         aux->sig = borrar->sig;
         delete borrar; 
-        return "borrado";
+        return OK;
     }
 }
 
 
-string BorrarTodo(){
+TipoRetorno BorrarTodo(){
     ListaLinea aux = L;
     while (aux->sig != NULL){
         ListaLinea borrarLinea = aux->sig;
@@ -267,14 +330,14 @@ string BorrarTodo(){
         delete borrarLinea;
         
     }
-    return "Lista borrada completamente!";
+    return OK;
 }
 
-string BorrarOcurrenciasPalabraEnLinea(int posicionLinea, string PALABRA){
+TipoRetorno BorrarOcurrenciasPalabraEnLinea(int posicionLinea, string PALABRA){
     int cant = getCantNodoLinea();
     if (cant == 0 || cant < posicionLinea)
     {
-        return "La linea no existe";
+        return ERROR;
     }
     ListaLinea aux = L;
     for (int i = 1; i < posicionLinea; i++)
@@ -293,7 +356,7 @@ string BorrarOcurrenciasPalabraEnLinea(int posicionLinea, string PALABRA){
         }
     }
 
-    return "PALABRAS DE LA LINEA ELIMINADOS CORRECTAMENTE";
+    return OK;
 }
 
 void ImprimirLinea(int posLine){
@@ -315,6 +378,9 @@ void ImprimirLinea(int posLine){
     }
 
 }
+
+
+
 
 void test_leo () {
     inicializarDummy();
