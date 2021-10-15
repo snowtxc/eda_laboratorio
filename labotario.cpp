@@ -32,6 +32,7 @@ string InsertarLineaEnPosicion(int);
 void imprimir();
 string InsertaPalabra();
 string Borrar_linea_segun_posicion(int);
+string BorrarTodo();
 
 
 //** FUNCIONES ADICIONALES  ***/
@@ -254,6 +255,30 @@ string Borrar_linea(int pos) {
     }
 }
 
+
+string BorrarTodo(){
+    ListaLinea aux = L;
+    while (aux->sig != NULL){
+        ListaLinea borrarLinea = aux->sig;
+        ListaPalabra bpal = borrarLinea->sigPalabra;
+        while (bpal->sigPalabra != NULL)
+        {
+            ListaPalabra borrar_palabra = bpal->sigPalabra;
+            bpal->sigPalabra = borrar_palabra->sigPalabra;
+            delete borrar_palabra;
+        }
+        aux->sigPalabra = NULL;
+        delete bpal;
+
+        //
+        aux->sig = borrarLinea->sig;
+        delete borrarLinea;
+        
+    }
+    return "Lista borrada completamente!";
+}
+
+
 void test_leo () {
     inicializarDummy();
 
@@ -277,27 +302,23 @@ void test_leo () {
 }
 
 void test_rodri(){
-     inicializarDummy();
+    inicializarDummy();
 
     insertar_linea_al_final() ;
-    //InsertarLineaEnPosicion(0) ;
     insertar_linea_al_final() ;
     insertar_linea_al_final() ;
+
+    InsertarPalabra(1,1,"Hola");
+
+
+
+
 
  
-    cout << InsertarPalabra(1,1,"Hola"); 
-    cout  <<  InsertarPalabra(1,2,"Perro");
-    cout  << InsertarPalabra(1,1,"Gato");
-    cout  << InsertarPalabra(1,1,"Gato");
-    cout  << InsertarPalabra(1,1, "Gatito");
-    cout << InsertarPalabra(1, 1, "Gatito");
 
-   
 
-    cout << endl; 
 
-    imprimir();
-    //cout << L->sig->cant_pal;
+
 }
 
 int main()
