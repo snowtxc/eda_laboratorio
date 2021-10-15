@@ -33,6 +33,9 @@ void imprimir();
 string InsertaPalabra();
 string Borrar_linea_segun_posicion(int);
 string BorrarTodo();
+void ImprimirLinea();
+
+
 
 
 //** FUNCIONES ADICIONALES  ***/
@@ -216,18 +219,7 @@ string InsertarPalabra(int posicionLinea, int posicionPalabra, string PALABRA)
     }
 }
 
-//int contar_lineas() {
-//    int lineas = 0;
-//    ListaLinea aux = L;
-//    aux = aux->sig;
-//    if (aux->sig != NULL){
-//        while (aux != NULL) {
-//            lineas ++;
-//            aux = aux->sig;
-//        }
-//    }
-//    return lineas;
-//}
+
 
 //Borrar linea segun posicion
 string Borrar_linea(int pos) {
@@ -279,6 +271,26 @@ string BorrarTodo(){
 }
 
 
+void ImprimirLinea(int posLine){
+    if(!(posLine >= 1 && posLine <= getCantNodoLinea())){
+        cout << "Linea no existe";
+    }
+    int num_linea = 1;
+    ListaLinea aux = L;
+    for (int i = 1; i < posLine; i++)
+    {
+         num_linea ++;
+         aux = aux->sig;
+    }
+    cout << num_linea << ":";
+    ListaPalabra auxp = aux->sig->sigPalabra;
+    while (auxp->sigPalabra != NULL){
+       cout << auxp->sigPalabra->palabra << " ";
+       auxp = auxp->sigPalabra;
+    }
+
+}
+
 void test_leo () {
     inicializarDummy();
 
@@ -307,18 +319,8 @@ void test_rodri(){
     insertar_linea_al_final() ;
     insertar_linea_al_final() ;
     insertar_linea_al_final() ;
-
     InsertarPalabra(1,1,"Hola");
-
-
-
-
-
- 
-
-
-
-
+    imprimir();
 }
 
 int main()
