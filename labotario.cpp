@@ -270,6 +270,31 @@ string BorrarTodo(){
     return "Lista borrada completamente!";
 }
 
+string BorrarOcurrenciasPalabraEnLinea(int posicionLinea, string PALABRA){
+    int cant = getCantNodoLinea();
+    if (cant == 0 || cant < posicionLinea)
+    {
+        return "La linea no existe";
+    }
+    ListaLinea aux = L;
+    for (int i = 1; i < posicionLinea; i++)
+    {
+        aux = aux->sig;
+    }
+    ListaPalabra auxlp = aux->sig->sigPalabra;
+    while (auxlp->sigPalabra != NULL)
+    {
+        if(auxlp->sigPalabra->palabra == PALABRA){
+             ListaPalabra borrar_pal= auxlp->sigPalabra;
+             auxlp->sigPalabra = borrar_pal->sigPalabra;
+             delete borrar_pal;
+        }else{
+            auxlp = auxlp->sigPalabra;
+        }
+    }
+
+    return "PALABRAS DE LA LINEA ELIMINADOS CORRECTAMENTE";
+}
 
 void ImprimirLinea(int posLine){
     if(!(posLine >= 1 && posLine <= getCantNodoLinea())){
@@ -309,7 +334,7 @@ void test_leo () {
     cout << endl;
     Borrar_linea(2);
     imprimir();
-
+     
     //cout << contar_lineas();
 }
 
@@ -320,6 +345,12 @@ void test_rodri(){
     insertar_linea_al_final() ;
     insertar_linea_al_final() ;
     InsertarPalabra(1,1,"Hola");
+    InsertarPalabra(1, 1, "Mujica");
+    InsertarPalabra(1, 1, "Hola");
+    InsertarPalabra(1, 1, "Hola");
+
+    imprimir();
+    cout << endl;
     imprimir();
 }
 
