@@ -36,12 +36,12 @@ typedef unsigned int Posicion;
 TipoRetorno insertar_linea_al_final();
 TipoRetorno InsertarLineaEnPosicion(int);
 void imprimir();
-TipoRetorno InsertaPalabra();
+TipoRetorno InsertaPalabra(int, int, string);
 TipoRetorno Borrar_linea_segun_posicion(int);
 TipoRetorno BorrarTodo();
 TipoRetorno BorrarOcurrenciasPalabraEnLinea(int,string);
 void ImprimirLinea();
-
+TipoRetorno BorrarPalabra (int, int);
 
 
 
@@ -49,12 +49,12 @@ void ImprimirLinea();
 
 void inicializarDummy();
 int  getCantNodoLinea();
-int  getCantNodoPalabra();
+int  getCantNodoPalabra(ListaPalabra);
 ListaLinea createLine();
 ListaPalabra createPalabra();
 ListaLinea buscarLine(int);
 ListaPalabra buscarPalabra();
-
+ListaLinea findPalabra(ListaPalabra , int);
 
 
 void  inicializarDummy()
@@ -86,35 +86,28 @@ int getCantNodoPalabra(ListaPalabra lp){
 }
 
 ListaLinea findLine(int posicionLinea){
-    if (!(posicionLinea >= 1 && posicionLinea <= getCantNodoLinea() + 1))
-    {
+    if (!(posicionLinea >= 1 && posicionLinea <= getCantNodoLinea() + 1)) {
         return NULL;
     }    
     ListaLinea aux = L;
-    for (int i = 1; i < posicionLinea; i++)
-    {
-        aux = aux->sig;
-    }
-
-    return aux;
-}
-
-ListaLinea findPalabra(ListaPalabra bpal , int posicionPal)
-{
-    if (!(posicionPal >= 1 && posicionPal <= getCantNodoPalabra(bpal) + 1))
-    {
-        return NULL;
-    }
-    ListaPalabra aux = bpal;
-    for (int i = 1; i < posicionPal; i++)
-    {
+    for (int i = 1; i < posicionLinea; i++) {
         aux = aux->sig;
     }
     return aux;
 }
 
-ListaLinea createLine()
-{
+//ListaPalabra findPalabra (ListaPalabra bpal , int posicionPal) {
+//    if (!(posicionPal >= 1 && posicionPal <= getCantNodoPalabra(bpal))) {
+//        return NULL;
+//    }
+//    ListaPalabra aux = bpal;
+//    for (int i = 1; i < posicionPal; i++) {
+//        aux = aux->sigPalabra;
+//    }
+//    return aux;
+//}
+
+ListaLinea createLine() {
     ListaLinea newline = new nodoLinea;
     newline->sig = NULL;
     newline->sigPalabra = new nodoPalabra;
@@ -122,14 +115,13 @@ ListaLinea createLine()
     return newline;
 }
 
-ListaLinea createPalabra(string palabra)
-{
-    ListaPalabra nodoPalabra = new nodoPalabra;
-    nodoPalabra->palabra = palabra;
-    nodoPalabra->sigPalabra = NULL;
-    return nodoPalabra;
-}
-
+//ListaLinea createPalabra(string palabra)
+//{
+//    ListaPalabra nodoPalabra = new nodoPalabra;
+//    nodoPalabra->palabra = palabra;
+//    nodoPalabra->sigPalabra = NULL;
+//    return nodoPalabra;
+//}
 
 
 //Insertar linea al final
@@ -151,9 +143,6 @@ TipoRetorno insertar_linea_al_final () {
     }
     return OK;
 }
-
-
-
 
 
 //Insertar nueva linea en posicion n
@@ -203,36 +192,26 @@ void imprimir () {
 
 
 //SIN TERMINAR
-TipoRetorno InsertarPalabra(int posicionLinea, int posicionPalabra, string PALABRA)
-{
-    if (L->sig == NULL)
-    {
+TipoRetorno InsertarPalabra(int posicionLinea, int posicionPalabra, string PALABRA) {
+    if (L->sig == NULL) {
         return ERROR;
     }
-
-    if (!(posicionLinea >= 1 && posicionLinea <= getCantNodoLinea()))
-    {
+    if (!(posicionLinea >= 1 && posicionLinea <= getCantNodoLinea())) {
         return ERROR;
     }
-    if (posicionPalabra > MAX_CANT_PALABRAS)
-    {
+    if (posicionPalabra > MAX_CANT_PALABRAS) {
         return ERROR;
     }
     ListaLinea aux = L;
-    for (int i = 1; i < posicionLinea; i++)
-    {
+    for (int i = 1; i < posicionLinea; i++) {
         aux = aux->sig;
     }
     ListaPalabra ant = NULL; //Almacenamos SI ES REQUERIDO EL ultimo nodo de la linea anterior ,para luego insertarlo en el primero de la siguiente.
-    while (aux->sig != NULL)
-    {
+    while (aux->sig != NULL) {
         ListaPalabra auxlp = aux->sig->sigPalabra; //LISTA PALABRAS DE LA LINEA
         int cantPal = getCantNodoPalabra(auxlp);   //Cantidad de palabras en la linea
-
-        if (cantPal < MAX_CANT_PALABRAS && ant == NULL) //SI el nodo tiene menos palabras que el anterior
-        {
-            for (int i = 1; i < posicionPalabra; i++)
-            {
+        if (cantPal < MAX_CANT_PALABRAS && ant == NULL) {//SI el nodo tiene menos palabras que el anterior 
+            for (int i = 1; i < posicionPalabra; i++) {
                 auxlp = auxlp->sigPalabra;
             }
             ListaPalabra nuevaPalabra = new nodoPalabra;
@@ -241,34 +220,26 @@ TipoRetorno InsertarPalabra(int posicionLinea, int posicionPalabra, string PALAB
             auxlp->sigPalabra = nuevaPalabra;
             return OK;
         }
-        else if (cantPal < MAX_CANT_PALABRAS && ant != NULL)
-        {
+        else if (cantPal < MAX_CANT_PALABRAS && ant != NULL) {
             ant->sigPalabra = auxlp->sigPalabra;
             auxlp->sigPalabra = ant;
             return OK;
         }
-        else
-        {
-
-            if (ant != NULL)
-            {
+        else {
+            if (ant != NULL) {
                 ant->sigPalabra = auxlp->sigPalabra;
                 auxlp->sigPalabra = ant;
             }
-            else
-            {
-                for (int i = 1; i < posicionPalabra; i++)
-                {
+            else {
+                for (int i = 1; i < posicionPalabra; i++) {
                     auxlp = auxlp->sigPalabra;
                 }
                 ListaPalabra nuevaPalabra = new nodoPalabra;
                 nuevaPalabra->palabra = PALABRA;
                 nuevaPalabra->sigPalabra = auxlp->sigPalabra;
                 auxlp->sigPalabra = nuevaPalabra;
-
                 ListaPalabra auxlp2 = auxlp;
-                while (auxlp2->sigPalabra->sigPalabra != NULL)
-                {
+                while (auxlp2->sigPalabra->sigPalabra != NULL) {
                     auxlp2 = auxlp2->sigPalabra;
                 }
                 ListaPalabra lastNodo = new nodoPalabra;
@@ -276,13 +247,11 @@ TipoRetorno InsertarPalabra(int posicionLinea, int posicionPalabra, string PALAB
                 auxlp2->sigPalabra = NULL;
                 ant = lastNodo;
             }
-
             aux = aux->sig;
         }
     }
+    return OK;
 }
-
-
 
 //Borrar linea segun posicion
 TipoRetorno Borrar_linea(int pos) {
@@ -310,63 +279,54 @@ TipoRetorno Borrar_linea(int pos) {
     }
 }
 
-
 TipoRetorno BorrarTodo(){
     ListaLinea aux = L;
     while (aux->sig != NULL){
         ListaLinea borrarLinea = aux->sig;
         ListaPalabra bpal = borrarLinea->sigPalabra;
-        while (bpal->sigPalabra != NULL)
-        {
+        while (bpal->sigPalabra != NULL)  {
             ListaPalabra borrar_palabra = bpal->sigPalabra;
             bpal->sigPalabra = borrar_palabra->sigPalabra;
             delete borrar_palabra;
         }
         aux->sigPalabra = NULL;
         delete bpal;
-
-        //
+        
         aux->sig = borrarLinea->sig;
         delete borrarLinea;
-        
     }
     return OK;
 }
 
 TipoRetorno BorrarOcurrenciasPalabraEnLinea(int posicionLinea, string PALABRA){
     int cant = getCantNodoLinea();
-    if (cant == 0 || cant < posicionLinea)
-    {
+    if (cant == 0 || cant < posicionLinea) {
         return ERROR;
     }
     ListaLinea aux = L;
-    for (int i = 1; i < posicionLinea; i++)
-    {
+    for (int i = 1; i < posicionLinea; i++) {
         aux = aux->sig;
     }
     ListaPalabra auxlp = aux->sig->sigPalabra;
-    while (auxlp->sigPalabra != NULL)
-    {
+    while (auxlp->sigPalabra != NULL) {
         if(auxlp->sigPalabra->palabra == PALABRA){
              ListaPalabra borrar_pal= auxlp->sigPalabra;
              auxlp->sigPalabra = borrar_pal->sigPalabra;
              delete borrar_pal;
-        }else{
+        }else {
             auxlp = auxlp->sigPalabra;
         }
     }
-
     return OK;
 }
 
 void ImprimirLinea(int posLine){
-    if(!(posLine >= 1 && posLine <= getCantNodoLinea())){
+    if(!(posLine >= 1 && posLine <= getCantNodoLinea())) {
         cout << "Linea no existe";
     }
     int num_linea = 1;
     ListaLinea aux = L;
-    for (int i = 1; i < posLine; i++)
-    {
+    for (int i = 1; i < posLine; i++) {
          num_linea ++;
          aux = aux->sig;
     }
@@ -376,11 +336,32 @@ void ImprimirLinea(int posLine){
        cout << auxp->sigPalabra->palabra << " ";
        auxp = auxp->sigPalabra;
     }
-
 }
 
-
-
+TipoRetorno BorrarPalabra (int poslinea, int pospalabra) {
+    if (L->sig == NULL || getCantNodoLinea() < poslinea) {
+        return ERROR;
+    }
+    else {
+        ListaLinea aux = L;
+        for (int i = 1; i < poslinea; i++) {
+            aux = aux->sig;
+        }
+        if ( getCantNodoPalabra(aux->sig->sigPalabra) < pospalabra ){
+            return ERROR;
+        }
+        else {
+            ListaPalabra pal = aux->sig->sigPalabra;
+            for (int i = 1; i < pospalabra; i++) {
+                pal = pal->sigPalabra;
+            }
+            ListaPalabra borrar = pal->sigPalabra;
+            pal->sigPalabra = borrar->sigPalabra;
+            delete borrar;
+        }
+    }
+    return OK;
+}
 
 void test_leo () {
     inicializarDummy();
@@ -395,12 +376,12 @@ void test_leo () {
     InsertarPalabra(1,1,"Gato");
     InsertarPalabra(1,1,"Gato");
     InsertarPalabra(1,1, "Gatito"); 
-    InsertarPalabra(1,1, "Gatito");
+    InsertarPalabra(1,1, "Lorito");
     imprimir();
     cout << endl;
-    Borrar_linea(2);
+    //Borrar_linea(2);
+    BorrarPalabra(20, 5);
     imprimir();
-     
     //cout << contar_lineas();
 }
 
@@ -422,5 +403,6 @@ void test_rodri(){
 
 int main()
 {
-   test_rodri();
+   //test_rodri();
+   test_leo();
 }
