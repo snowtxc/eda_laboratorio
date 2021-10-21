@@ -78,7 +78,7 @@ int getCantNodoPalabra(ListaPalabra lp) {
      return cantPal; 
 }
 
-ListaLinea findLine(int posicionLinea) {
+ListaLinea buscarLine(int posicionLinea) {
     if (!(posicionLinea >= 1 && posicionLinea <= getCantNodoLinea() + 1)) {
         return NULL;
     }    
@@ -185,64 +185,76 @@ void imprimir () {
 
 //SIN TERMINAR
 TipoRetorno InsertarPalabra(int posicionLinea, int posicionPalabra, string PALABRA) {
-    if (L->sig == NULL) {
-        return ERROR;
-    }
-    if (!(posicionLinea >= 1 && posicionLinea <= getCantNodoLinea())) {
-        return ERROR;
-    }
-    if (posicionPalabra > MAX_CANT_PALABRAS) {
-        return ERROR;
-    }
-    ListaLinea aux = L;
-    for (int i = 1; i < posicionLinea; i++) {
-        aux = aux->sig;
-    }
-    ListaPalabra ant = NULL; //Almacenamos SI ES REQUERIDO EL ultimo nodo de la linea anterior ,para luego insertarlo en el primero de la siguiente.
-    while (aux->sig != NULL) {
-        ListaPalabra auxlp = aux->sig->sigPalabra; //LISTA PALABRAS DE LA LINEA
-        int cantPal = getCantNodoPalabra(auxlp);   //Cantidad de palabras en la linea
-        if (cantPal < MAX_CANT_PALABRAS && ant == NULL) {//SI el nodo tiene menos palabras que el anterior 
-            for (int i = 1; i < posicionPalabra; i++) {
-                auxlp = auxlp->sigPalabra;
-            }
-            ListaPalabra nuevaPalabra = new nodoPalabra;
-            nuevaPalabra->palabra = PALABRA;
-            nuevaPalabra->sigPalabra = auxlp->sigPalabra;
-            auxlp->sigPalabra = nuevaPalabra;
-            return OK;
-        }
-        else if (cantPal < MAX_CANT_PALABRAS && ant != NULL) {
-            ant->sigPalabra = auxlp->sigPalabra;
-            auxlp->sigPalabra = ant;
-            return OK;
-        }
-        else {
-            if (ant != NULL) {
+     ListaLinea lineaAnt = buscarLine(posicionLinea);
+     if(lineaAnt == NULL){
+         return ERROR;
+     }   
+     if(posicionPalabra > MAX_CANT_PALABRAS){
+         return ERROR;
+     }
+
+     ListaPalabra nuevaPalabra = new nodoPalabra;
+     nuevaPalabra->palabra = PALABRA;
+     ListaPalabra ant = NULL;
+
+     while (lineaAnt->sig != NULL){
+         ListaPalabra auxlp = lineaAnt->sig->sigPalabra;
+         int cantPalabras = getCantNodoPalabra(auxlp);
+
+         if (cantPalabras < MAX_CANT_PALABRAS)
+         {
+             if (ant == NULL)
+             {
+                 nuevaPalabra->sigPalabra = auxlp->sigPalabra;
+                 auxlp->sigPalabra = nuevaPalabra;
+                 return OK;
+             }
+             else
+             {
                 ant->sigPalabra = auxlp->sigPalabra;
                 auxlp->sigPalabra = ant;
-            }
-            else {
-                for (int i = 1; i < posicionPalabra; i++) {
-                    auxlp = auxlp->sigPalabra;
-                }
-                ListaPalabra nuevaPalabra = new nodoPalabra;
-                nuevaPalabra->palabra = PALABRA;
-                nuevaPalabra->sigPalabra = auxlp->sigPalabra;
-                auxlp->sigPalabra = nuevaPalabra;
-                ListaPalabra auxlp2 = auxlp;
-                while (auxlp2->sigPalabra->sigPalabra != NULL) {
-                    auxlp2 = auxlp2->sigPalabra;
-                }
-                ListaPalabra lastNodo = new nodoPalabra;
-                lastNodo->palabra = auxlp2->sigPalabra->palabra;
-                auxlp2->sigPalabra = NULL;
-                ant = lastNodo;
-            }
-            aux = aux->sig;
-        }
-    }
-    return OK;
+                return OK;
+             }
+         }
+         else
+         {
+             while (auxlp->sigPalabra->sigPalabra != NULL)
+             {
+                 auxlp = auxlp->sigPalabra;
+             }
+             ListaPalabra ultimo = auxlp->sigPalabra;
+             auxlp->sigPalabra = NULL;
+             auxlp = lineaAnt->sig->sigPalabra;
+             
+        
+             if (ant == NULL)
+             {
+                 for (int i = 0; i < posicionPalabra; i++)
+                 {
+                     auxlp = auxlp->sigPalabra;
+                 }
+                 nuevaPalabra->sigPalabra = auxlp->sigPalabra;
+                 auxlp->sigPalabra = nuevaPalabra;
+             }
+             else
+             {
+                 ant->sigPalabra = auxlp->sigPalabra;
+                 auxlp->sigPalabra = ant;
+             }
+             ant = ultimo;
+             lineaAnt = lineaAnt->sig;
+         }
+       
+     }
+
+     ListaLinea nuevaLinea = createLine();
+     lineaAnt->sig = nuevaLinea;
+     nuevaLinea->sigPalabra->sigPalabra = ant; 
+     return OK;
+     
+    
+     
+
 }
 
 //Borrar linea segun posicion
@@ -416,9 +428,16 @@ void test_rodri(){
     insertar_linea_al_final() ;
     insertar_linea_al_final() ;
     InsertarPalabra(1,1,"Hola");
-    InsertarPalabra(1, 1, "Mujica");
-    InsertarPalabra(1, 1, "Hola");
-    InsertarPalabra(1, 1, "Hola");
+    InsertarPalabra(1, 1, "Rodrigo");
+    InsertarPalabra(1, 1, "Castro");
+    InsertarPalabra(1, 1, "como");
+    InsertarPalabra(1, 1, "como");
+    InsertarPalabra(1, 1, "como");
+    InsertarPalabra(1, 1, "como");
+    InsertarPalabra(1, 1, "como");
+    InsertarPalabra(1, 1, "como");
+    InsertarPalabra(1, 1, "como");
+
 
     imprimir();
     cout << endl;
@@ -428,5 +447,5 @@ void test_rodri(){
 int main()
 {
    //test_rodri();
-   test_leo();
+   test_rodri();
 }
