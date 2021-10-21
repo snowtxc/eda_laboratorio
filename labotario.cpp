@@ -20,7 +20,6 @@ typedef nodoLinea * ListaLinea;
 
 ListaLinea L = new nodoLinea;
 
-
 enum TipoRetorno{
     OK,
     ERROR,
@@ -28,8 +27,6 @@ enum TipoRetorno{
 };
 
 typedef unsigned int Posicion;
-
-
 
 /*** FUNCIONES REQUERIDAS ***/
 
@@ -41,9 +38,8 @@ TipoRetorno Borrar_linea_segun_posicion(int);
 TipoRetorno BorrarTodo();
 TipoRetorno BorrarOcurrenciasPalabraEnLinea(int,string);
 void ImprimirLinea();
-TipoRetorno BorrarPalabra (int, int);
-
-
+TipoRetorno BorrarPalabra(int, int);
+TipoRetorno BorrarOcurrenciasPalabraEnTexto(string);
 
 //** FUNCIONES ADICIONALES  ***/
 
@@ -56,9 +52,7 @@ ListaLinea buscarLine(int);
 ListaPalabra buscarPalabra();
 ListaLinea findPalabra(ListaPalabra , int);
 
-
-void  inicializarDummy()
-{
+void  inicializarDummy() {
     L->cant_pal = 0;
     L->sig = NULL;
     L->sigPalabra = NULL;
@@ -75,17 +69,16 @@ int getCantNodoLinea(){
     return countList;
 }
 
-int getCantNodoPalabra(ListaPalabra lp){
+int getCantNodoPalabra(ListaPalabra lp) {
      int cantPal = 0;
      while (lp->sigPalabra != NULL){
         cantPal++;
         lp = lp->sigPalabra;
      }
-
      return cantPal; 
 }
 
-ListaLinea findLine(int posicionLinea){
+ListaLinea findLine(int posicionLinea) {
     if (!(posicionLinea >= 1 && posicionLinea <= getCantNodoLinea() + 1)) {
         return NULL;
     }    
@@ -123,7 +116,6 @@ ListaLinea createLine() {
 //    return nodoPalabra;
 //}
 
-
 //Insertar linea al final
 TipoRetorno insertar_linea_al_final () {
     ListaLinea newline = new nodoLinea;
@@ -144,25 +136,25 @@ TipoRetorno insertar_linea_al_final () {
     return OK;
 }
 
-
 //Insertar nueva linea en posicion n
 //UTILIZA NODO DUMMY;
 
 TipoRetorno InsertarLineaEnPosicion(int posicionLinea){
-    if(!(posicionLinea >=1 && posicionLinea <= getCantNodoLinea() + 1)){  return ERROR;  }
-
+    if(!(posicionLinea >=1 && posicionLinea <= getCantNodoLinea() + 1)) { 
+        return ERROR;  
+    }
     ListaLinea aux = L;
     ListaLinea newLine = new nodoLinea;
     newLine->sigPalabra = new nodoPalabra;
     newLine->sigPalabra->sigPalabra = NULL;
-
-    for(int i=1; i < posicionLinea; i++){  
+    for(int i=1; i < posicionLinea; i++) {  
         aux = aux->sig; 
     }
-    if(aux->sig == NULL){
+    if(aux->sig == NULL) {
         newLine->sig = NULL;
         aux->sig = newLine;
-    }else{
+    }
+    else {
         newLine->sig = aux->sig;
         aux->sig = newLine;
     }
@@ -177,9 +169,9 @@ void imprimir () {
     ListaLinea aux = L;
     while (aux->sig != NULL) {
         cout << num_linea << ":";
-        if (aux->sig->sigPalabra != NULL){
+        if (aux->sig->sigPalabra != NULL) {
             ListaPalabra auxp = aux->sig->sigPalabra;
-            while (auxp->sigPalabra != NULL){
+            while (auxp->sigPalabra != NULL) {
                 cout << auxp->sigPalabra->palabra << " ";
                 auxp = auxp->sigPalabra;
             }
@@ -279,7 +271,7 @@ TipoRetorno Borrar_linea(int pos) {
     }
 }
 
-TipoRetorno BorrarTodo(){
+TipoRetorno BorrarTodo() {
     ListaLinea aux = L;
     while (aux->sig != NULL){
         ListaLinea borrarLinea = aux->sig;
@@ -298,7 +290,7 @@ TipoRetorno BorrarTodo(){
     return OK;
 }
 
-TipoRetorno BorrarOcurrenciasPalabraEnLinea(int posicionLinea, string PALABRA){
+TipoRetorno BorrarOcurrenciasPalabraEnLinea(int posicionLinea, string PALABRA) {
     int cant = getCantNodoLinea();
     if (cant == 0 || cant < posicionLinea) {
         return ERROR;
@@ -309,7 +301,7 @@ TipoRetorno BorrarOcurrenciasPalabraEnLinea(int posicionLinea, string PALABRA){
     }
     ListaPalabra auxlp = aux->sig->sigPalabra;
     while (auxlp->sigPalabra != NULL) {
-        if(auxlp->sigPalabra->palabra == PALABRA){
+        if(auxlp->sigPalabra->palabra == PALABRA) {
              ListaPalabra borrar_pal= auxlp->sigPalabra;
              auxlp->sigPalabra = borrar_pal->sigPalabra;
              delete borrar_pal;
@@ -332,7 +324,7 @@ void ImprimirLinea(int posLine){
     }
     cout << num_linea << ":";
     ListaPalabra auxp = aux->sig->sigPalabra;
-    while (auxp->sigPalabra != NULL){
+    while (auxp->sigPalabra != NULL) {
        cout << auxp->sigPalabra->palabra << " ";
        auxp = auxp->sigPalabra;
     }
@@ -347,7 +339,7 @@ TipoRetorno BorrarPalabra (int poslinea, int pospalabra) {
         for (int i = 1; i < poslinea; i++) {
             aux = aux->sig;
         }
-        if ( getCantNodoPalabra(aux->sig->sigPalabra) < pospalabra ){
+        if ( getCantNodoPalabra(aux->sig->sigPalabra) < pospalabra ) {
             return ERROR;
         }
         else {
@@ -361,6 +353,32 @@ TipoRetorno BorrarPalabra (int poslinea, int pospalabra) {
         }
     }
     return OK;
+}
+
+TipoRetorno BorrarOcurrenciasPalabraEnTexto (string pal) {
+    ListaLinea aux = L;
+    ListaPalabra palabra;
+    ListaPalabra borrar;
+    if (L->sig == NULL) {
+        return ERROR;
+    }
+    else {
+        while (aux->sig != NULL) {
+            aux = aux->sig;
+            palabra = aux->sigPalabra;
+            while (palabra->sigPalabra != NULL) {
+                if ( palabra->sigPalabra->palabra == pal ) {
+                    borrar = palabra->sigPalabra;
+                    palabra->sigPalabra = borrar->sigPalabra;
+                    delete borrar;
+                }
+                else {
+                    palabra = palabra->sigPalabra;
+                }
+            }
+        }
+        return OK;  
+    }
 }
 
 void test_leo () {
@@ -377,12 +395,18 @@ void test_leo () {
     InsertarPalabra(1,1,"Gato");
     InsertarPalabra(1,1, "Gatito"); 
     InsertarPalabra(1,1, "Lorito");
+    InsertarPalabra(1,1, "Lorito");
+    InsertarPalabra(3,1, "Lorito");
+    InsertarPalabra(3,2, "Lorito");
+    InsertarPalabra(4,1, "Lorito");
     imprimir();
+
     cout << endl;
+
+    BorrarOcurrenciasPalabraEnTexto("Pepito");
     //Borrar_linea(2);
-    BorrarPalabra(20, 5);
+    //BorrarPalabra(20, 5);
     imprimir();
-    //cout << contar_lineas();
 }
 
 void test_rodri(){
