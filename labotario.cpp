@@ -40,6 +40,7 @@ TipoRetorno BorrarOcurrenciasPalabraEnLinea(int,string);
 void ImprimirLinea();
 TipoRetorno BorrarPalabra(int, int);
 TipoRetorno BorrarOcurrenciasPalabraEnTexto(string);
+TipoRetorno ComprimirTexto();
 
 //** FUNCIONES ADICIONALES  ***/
 
@@ -51,6 +52,8 @@ ListaPalabra createPalabra();
 ListaLinea buscarLine(int);
 ListaPalabra buscarPalabra();
 ListaLinea findPalabra(ListaPalabra , int);
+
+
 
 void  inicializarDummy() {
     L->cant_pal = 0;
@@ -393,6 +396,54 @@ TipoRetorno BorrarOcurrenciasPalabraEnTexto (string pal) {
     }
 }
 
+
+TipoRetorno ComprimirTexto(){
+    ListaLinea aux = L;
+    
+    //Nuevo texto empezando por dummy
+    ListaLinea textoComprimido = new nodoLinea;
+    textoComprimido->sig = NULL;
+    textoComprimido->sigPalabra = NULL;
+
+    ListaLinea auxTextoComp = textoComprimido;
+
+    int cantPalabrasForLine = 0;
+
+    while (aux->sig != NULL)
+    {     
+        ListaPalabra auxlp = aux->sig->sigPalabra;
+        while (auxlp->sigPalabra != NULL)
+        { 
+          if(cantPalabrasForLine == 0){
+              auxTextoComp->sig = createLine();
+          }
+
+          ListaPalabra nueva_palabra = new nodoPalabra;
+          nueva_palabra->palabra = auxlp->sigPalabra->palabra;
+          nueva_palabra->sigPalabra = NULL;     
+        
+          ListaPalabra aux_nuevas_palabras = auxTextoComp->sig->sigPalabra;
+          while (aux_nuevas_palabras->sigPalabra != NULL)
+          {
+              aux_nuevas_palabras = aux_nuevas_palabras->sigPalabra;
+          }
+          aux_nuevas_palabras->sigPalabra = nueva_palabra;
+          cantPalabrasForLine ++;
+          if(cantPalabrasForLine == MAX_CANT_PALABRAS){
+              cantPalabrasForLine = 0;
+              auxTextoComp = auxTextoComp->sig;
+          }
+          auxlp = auxlp->sigPalabra;
+        }
+        aux = aux->sig;
+    }
+
+    BorrarTodo();
+    imprimir();
+    L = textoComprimido;
+    return OK; 
+}
+
 void test_leo () {
     inicializarDummy();
 
@@ -437,9 +488,15 @@ void test_rodri(){
     InsertarPalabra(1, 1, "como");
     InsertarPalabra(1, 1, "como");
     InsertarPalabra(1, 1, "como");
+    InsertarPalabra(1,2,"Muzarella");
+
+    BorrarOcurrenciasPalabraEnTexto("como");
+
+    InsertarPalabra(2,1, "Fantasma");
+    InsertarPalabra(3, 1, "Mujica");
 
 
-    imprimir();
+
     cout << endl;
     imprimir();
 }
