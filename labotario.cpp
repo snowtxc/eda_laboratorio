@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -15,14 +16,21 @@ struct nodoLinea{
     nodoPalabra * sigPalabra;
 };
 
+struct comandos {
+    string sintaxis;
+    string param1;
+    string param2;
+    string param3;
+};
+
 typedef nodoPalabra * ListaPalabra;
 typedef nodoLinea * ListaLinea;
 
 ListaLinea L = new nodoLinea;
 
 enum TipoRetorno{
-    OK,
     ERROR,
+    OK,
     NO_IMPLEMENTADA
 };
 
@@ -41,6 +49,7 @@ void ImprimirLinea();
 TipoRetorno BorrarPalabra(int, int);
 TipoRetorno BorrarOcurrenciasPalabraEnTexto(string);
 TipoRetorno ComprimirTexto();
+void menu();
 
 //** FUNCIONES ADICIONALES  ***/
 
@@ -495,14 +504,88 @@ void test_rodri(){
     InsertarPalabra(2,1, "Fantasma");
     InsertarPalabra(3, 1, "Mujica");
 
-
-
     cout << endl;
     imprimir();
 }
 
+comandos procesar(){ 
+    string comando;
+    comandos com;
+    cout << "Ingrese el comando: ";
+    cin >> comando;
+
+    int pos = 0;
+    string delimiter = "(";
+    string delimiter2 = ",";
+    string delimiter3 = ")";
+
+    pos = comando.find (delimiter);
+    com.sintaxis = comando.substr(0, pos);
+    comando.erase(0, pos + delimiter.length());
+
+    if (comando.find(delimiter2)) {
+        pos = comando.find(delimiter2);
+        com.param1 = comando.substr(0, pos);
+        comando.erase(0, pos + delimiter2.length());
+
+        if (comando.find(delimiter2)) {
+            pos = comando.find(delimiter2);
+            com.param2 = comando.substr(0, pos);
+            comando.erase(0, pos + delimiter2.length());
+        }
+    }
+    pos = comando.find(delimiter3);
+    com.param3 = comando.substr(0, pos);
+    comando.erase(0, pos + delimiter3.length());
+    return com;
+}
+
+void Menu() {
+    int exit = 0;
+    while (exit != 1) {
+        comandos com = procesar();
+        string sintaxis = com.sintaxis;
+        int i = 0;
+
+        if (sintaxis == "InsertarLinea") {
+            if (insertar_linea_al_final() == 1) {
+                cout << "OK" ;
+            }
+            else {
+                cout << "ERROR MACHAZO";
+            } 
+        }
+        else if (sintaxis == "ImprimirTexto") {
+            imprimir();
+        }
+        else if (sintaxis == "InsertarLineaEnPosicion")  {
+            try {
+                int p1 = std::stoi(com.param1);
+                InsertarLineaEnPosicion(p1);
+                }
+                catch (invalid_argument const &e) {
+                cout << "syntax error: parametros invalidos" ;
+                }
+        }
+        cout << "exit?";
+        cin >> exit;
+    }
+}
+    
+void imprimir_fecha(comandos com) {
+    cout << endl;
+    cout << "   DIA >>> " << com.sintaxis << endl; 
+    cout << "   MES >>> " << com.param1 << endl; 
+    cout << "   ANIO >>> " << com.param2 << endl; 
+    cout << "   ANIO >>> " << com.param3 << endl;
+}
+
 int main()
 {
-   //test_rodri();
-   test_rodri();
+    inicializarDummy();
+    //test_rodri();
+    //test_leo();
+    //menu();
+    //imprimir_fecha(com);
+    Menu();
 }
