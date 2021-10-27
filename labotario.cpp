@@ -541,35 +541,57 @@ comandos procesar(){
 }
 
 void Menu() {
-    int exit = 0;
-    while (exit != 1) {
+
+    char opcion;
+    do
+    {
         comandos com = procesar();
         string sintaxis = com.sintaxis;
         int i = 0;
 
-        if (sintaxis == "InsertarLinea") {
-            if (insertar_linea_al_final() == 1) {
-                cout << "OK" ;
+        if (sintaxis == "InsertarLinea")
+        {
+            if (insertar_linea_al_final() == 1)
+            {
+                cout << "OK";
             }
-            else {
+            else
+            {
                 cout << "ERROR MACHAZO";
-            } 
+            }
         }
-        else if (sintaxis == "ImprimirTexto") {
+        else if (sintaxis == "ImprimirTexto")
+        {
             imprimir();
         }
-        else if (sintaxis == "InsertarLineaEnPosicion")  {
-            try {
+        else if (sintaxis == "InsertarLineaEnPosicion")
+        {
+            try
+            {
                 int p1 = std::stoi(com.param1);
                 InsertarLineaEnPosicion(p1);
-                }
-                catch (invalid_argument const &e) {
-                cout << "syntax error: parametros invalidos" ;
-                }
+            }
+            catch (invalid_argument const &e)
+            {
+                cout << "syntax error: parametros invalidos";
+            }
         }
-        cout << "exit?";
-        cin >> exit;
-    }
+        else
+        {
+            cout << "Error en el comando!";
+        }
+
+        cout << endl << "Deseas salir? 1: Yes 0: No";
+        cin >> opcion;
+        while (opcion != '1' && opcion != '2')
+        {
+            cout << "OPCION INVALIDA VUELVE A INTENTARLO";
+            cin >> opcion;
+        }
+    } while (opcion != '1');
+
+
+    cout << "PROGRAMA FINALIZADO!";
 }
     
 void imprimir_fecha(comandos com) {
