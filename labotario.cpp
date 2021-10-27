@@ -508,7 +508,7 @@ void test_rodri(){
     imprimir();
 }
 
-comandos procesar(){ 
+comandos procesar() { 
     string comando;
     comandos com;
     cout << "Ingrese el comando: ";
@@ -541,73 +541,123 @@ comandos procesar(){
 }
 
 void Menu() {
-
     char opcion;
-    do
-    {
+    string sintaxis;
+    do {
         comandos com = procesar();
-        string sintaxis = com.sintaxis;
+        sintaxis = com.sintaxis;
         int i = 0;
-
-        if (sintaxis == "InsertarLinea")
-        {
-            if (insertar_linea_al_final() == 1)
-            {
-                cout << "OK";
+        
+        if (sintaxis == "InsertarLinea") {
+            if (insertar_linea_al_final() == 1) {
+                cout << "OK" << endl;
             }
-            else
-            {
-                cout << "ERROR MACHAZO";
+            else {
+                cout << "ERROR" << endl;
             }
         }
-        else if (sintaxis == "ImprimirTexto")
-        {
+        else if (sintaxis == "ImprimirTexto") {
             imprimir();
         }
-        else if (sintaxis == "InsertarLineaEnPosicion")
-        {
-            try
-            {
+        else if (sintaxis == "InsertarLineaEnPosicion") {
+            try {
                 int p1 = std::stoi(com.param1);
                 InsertarLineaEnPosicion(p1);
             }
-            catch (invalid_argument const &e)
-            {
-                cout << "syntax error: parametros invalidos";
+            catch (invalid_argument const &e) {
+                cout << "ERROR" << endl;
             }
         }
-        else
-        {
-            cout << "Error en el comando!";
+        else if (sintaxis == "BorrarLinea") {
+            int p1 = std::stoi(com.param1);
+            if (Borrar_linea(p1) == 1) {
+                cout << "OK" << endl;
+            }
+            else {
+                cout << "ERROR" << endl;
+            } 
         }
-
-        cout << endl << "Deseas salir? 1: Yes 0: No";
-        cin >> opcion;
-        while (opcion != '1' && opcion != '2')
-        {
-            cout << "OPCION INVALIDA VUELVE A INTENTARLO";
-            cin >> opcion;
+        else if (sintaxis == "BorrarTodo") {
+            if (BorrarTodo() == 1) {
+                cout << "OK" << endl;
+            }
+            else {
+                cout << "ERROR" << endl;
+            }
         }
-    } while (opcion != '1');
-
-
+        else if (sintaxis == "BorrarOcurrenciasPalabraEnTexto") {
+            if (BorrarOcurrenciasPalabraEnTexto(com.param3) == 1) {
+                cout << "OK" << endl;
+            }
+            else {
+                cout << "ERROR" << endl;
+            }
+        }
+        else if (sintaxis == "ComprimirTexto") {
+            if (ComprimirTexto() == 1) {
+                cout << "OK" << endl;
+            }
+            else {
+                cout << "ERROR" << endl;
+            }
+        }
+        else if (sintaxis == "InsertarPalabra") {
+            int p1 = std::stoi(com.param1);
+            int p2 = std::stoi(com.param2);
+            if (InsertarPalabra(p1, p2, com.param3) == 1) {
+                cout << "OK" << endl;
+            }
+            else {
+                cout << "ERROR" << endl;
+            }
+        }
+        else if (sintaxis == "ImprimirLinea") {
+            int p1 = std::stoi(com.param1);
+            ImprimirLinea(p1);
+        }
+        else if (sintaxis == "BorrarPalabra") {
+            int p1 = std::stoi(com.param1);
+            int p2 = std::stoi(com.param2);
+            if (BorrarPalabra(p1, p2) == 1) {
+                cout << "OK" << endl;
+            }
+            else {
+                cout << "ERROR" << endl;
+            }
+        }
+        else if (sintaxis == "BorrarOcurrenciasPalabraEnLinea" ) {
+            int p1 = std::stoi(com.param1);
+            if (BorrarOcurrenciasPalabraEnLinea(p1, com.param3) == 1) {
+                cout << "OK" << endl;
+            }
+            else {
+                cout << "ERROR" << endl;
+            }
+        }
+        //else {
+        cout << "Error en el comando!";
+        //}
+        //cout << endl << "Deseas salir? 1: Yes 0: No";
+        //cin >> opcion;
+        //while (opcion != '1' && opcion != '2') {
+        //    cout << "OPCION INVALIDA VUELVE A INTENTARLO";
+        //    cin >> opcion;
+        //}
+        //}
+    }
+    while (sintaxis != "Exit");
     cout << "PROGRAMA FINALIZADO!";
 }
     
-void imprimir_fecha(comandos com) {
-    cout << endl;
-    cout << "   DIA >>> " << com.sintaxis << endl; 
-    cout << "   MES >>> " << com.param1 << endl; 
-    cout << "   ANIO >>> " << com.param2 << endl; 
-    cout << "   ANIO >>> " << com.param3 << endl;
-}
+//void imprimir_fecha(comandos com) {
+//    cout << endl;
+//    cout << "   DIA >>> " << com.sintaxis << endl; 
+//    cout << "   MES >>> " << com.param1 << endl; 
+//    cout << "   ANIO >>> " << com.param2 << endl; 
+//    cout << "   ANIO >>> " << com.param3 << endl;
+//}
 
-int main()
-{
+int main() {
     inicializarDummy();
-    //test_rodri();
-    //test_leo();
-    //menu();
-    //imprimir_fecha(com);
     Menu();
 }
