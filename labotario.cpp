@@ -202,25 +202,35 @@ TipoRetorno InsertarPalabra(int posicionLinea, int posicionPalabra, string PALAB
      if(lineaAnt == NULL){
          return ERROR;
      }   
-     if(posicionPalabra > MAX_CANT_PALABRAS){
+     if(!(posicionPalabra >= 1 && posicionPalabra <= MAX_CANT_PALABRAS)){
          return ERROR;
      }
 
+     
      ListaPalabra nuevaPalabra = new nodoPalabra;
      nuevaPalabra->palabra = PALABRA;
-     ListaPalabra ant = NULL;
+     ListaPalabra ant = NULL;   
 
      while (lineaAnt->sig != NULL){
          ListaPalabra auxlp = lineaAnt->sig->sigPalabra;
          int cantPalabras = getCantNodoPalabra(auxlp);
 
+
          if (cantPalabras < MAX_CANT_PALABRAS)
          {
-             if (ant == NULL)
-             {
-                 nuevaPalabra->sigPalabra = auxlp->sigPalabra;
-                 auxlp->sigPalabra = nuevaPalabra;
-                 return OK;
+             if (ant == NULL){
+                 if(posicionPalabra - 1 > cantPalabras){
+                     cout << "ERROR";
+                     return ERROR;
+                 }else{
+                     for (int i = 1; i < posicionPalabra; i++){
+                         auxlp = auxlp->sigPalabra;
+                     }
+                     nuevaPalabra->sigPalabra = auxlp->sigPalabra;
+                     auxlp->sigPalabra = nuevaPalabra;
+
+                     return OK;
+                 }   
              }
              else
              {
@@ -242,7 +252,7 @@ TipoRetorno InsertarPalabra(int posicionLinea, int posicionPalabra, string PALAB
         
              if (ant == NULL)
              {
-                 for (int i = 0; i < posicionPalabra; i++)
+                 for (int i = 1; i < posicionPalabra; i++)
                  {
                      auxlp = auxlp->sigPalabra;
                  }
@@ -544,7 +554,12 @@ void Menu() {
             else if (sintaxis == "InsertarPalabra") {
                 int p1 = std::stoi(com.param1);
                 int p2 = std::stoi(com.param2);
-                if (InsertarPalabra(p1, p2, com.param3) == 1) {
+
+                cout << p1 << endl;
+                cout << p2 << endl;
+
+                cout << com.param3;
+                if (InsertarPalabra(p1, p2, com.param3) == OK) {
                     cout << "OK" << endl;
                 }
                 else {
@@ -576,7 +591,7 @@ void Menu() {
             }
             else if (sintaxis == "Help") {
                 cout << endl;
-                cout <<ANSI_COLOR_GREEN "****SINTAXIS PARA EL CORRECRTO FUNCIONAMIENTO DE LOS COMANDOS:****"  ANSI_COLOR_RESET << endl;
+                cout << ANSI_COLOR_GREEN "****SINTAXIS PARA EL CORRECRTO FUNCIONAMIENTO DE LOS COMANDOS:****"  ANSI_COLOR_RESET << endl;
                 cout << endl;
                 cout << "NombreDelComando(parametro 1,parametro 2,parametro 3)" << endl;
                 cout << endl;
@@ -619,5 +634,18 @@ void Menu() {
 
 int main() {
     inicializarDummy();
-    Menu();
+    insertar_linea_al_final();
+    InsertarPalabra(1,1,"Rodrigo");
+    InsertarPalabra(1, 2, "Gato");
+    InsertarPalabra(1, 3, "Pijama");
+    InsertarPalabra(1, 3, "Pijamo");
+    InsertarPalabra(2, 2, "Pijamada");
+    InsertarPalabra(1, 1, "Yu gi oh!");
+    InsertarPalabra(2, 1, "Goku");
+
+    imprimir();
+
+    //Menu();
+
+
 }
