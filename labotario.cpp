@@ -26,6 +26,7 @@ struct comandos {
     string param1;
     string param2;
     string param3;
+    int cant_params;   
 };
 
 typedef nodoPalabra * ListaPalabra;
@@ -67,6 +68,7 @@ ListaLinea buscarLine(int);
 ListaPalabra buscarPalabra();
 ListaLinea findPalabra(ListaPalabra , int);
 comandos procesar();
+int getCantParamsComando(comandos);
 
 void  inicializarDummy() {
     L->cant_pal = 0;
@@ -133,6 +135,25 @@ ListaLinea createLine() {
 //}
 
 //Insertar linea al final
+
+
+
+int getCantParamsComando(comandos c){
+    int cont = 0;
+    if (c.param1 != ""){
+        cont ++;
+    }
+
+    if  (c.param2 != "" )
+    {
+        cont++;
+    }
+    if (c.param3 != "")
+    {
+        cont++;
+    }
+    return cont;
+}
 TipoRetorno insertar_linea_al_final () {
     ListaLinea newline = new nodoLinea;
     newline->sig = NULL;
@@ -460,32 +481,71 @@ TipoRetorno ComprimirTexto(){
 comandos procesar() { 
     string comando;
     comandos com;
+    com.cant_params = 0;
+
     cout <<ANSI_COLOR_YELLOW "Ingrese el comando: " ANSI_COLOR_RESET;
     cin >> comando;
+
+    com.param1 = "";
+    com.param2 = "";
+    com.param3 = "";
+
 
     int pos = 0;
     string delimiter = "(";
     string delimiter2 = ",";
     string delimiter3 = ")";
 
+
     pos = comando.find (delimiter);
     com.sintaxis = comando.substr(0, pos);
-    comando.erase(0, pos + delimiter.length());
+    comando.erase(0, pos + delimiter.length());      //InsertarPalabra(1,2,3)
+                                                        
+                                                        //sinxtaxis =InsertarPalabra
+                                                          //1,2,
 
-    if (comando.find(delimiter2)) {
-        pos = comando.find(delimiter2);
+    if (comando.find(delimiter2) == true) {
+        pos = comando.find(delimiter2);              //param1 = 1
         com.param1 = comando.substr(0, pos);
-        comando.erase(0, pos + delimiter2.length());
+        com.cant_params ++;
+        comando.erase(0, pos + delimiter2.length());   // 2,3)
 
-        if (comando.find(delimiter2)) {
-            pos = comando.find(delimiter2);
+        if (comando.find(delimiter2) == true) {             
+            pos = comando.find(delimiter2);                  //3)
             com.param2 = comando.substr(0, pos);
+            com.cant_params++;
             comando.erase(0, pos + delimiter2.length());
+
+            if(comando.find(delimiter2) == true){
+                pos = comando.find(delimiter2); //3)
+                com.param3 = comando.substr(0, pos);
+                com.cant_params++;
+                comando.erase(0, pos + delimiter2.length());
+
+                if (comando != "")
+                {
+                    com.cant_params = -1;
+                }
+            }else{
+                pos = comando.find(delimiter3); //3)
+                com.param3 = comando.substr(0, pos);
+                comando.erase(0, pos + delimiter3.length());
+
+                if(comando != ""){
+                    com.cant_params = -1;
+                }
+            }
+           
+        }else{
+            pos = comando.find(delimiter3); //3)
+            com.param2 = comando.substr(0, pos);
+            comando.erase(0, pos + delimiter3.length());
         }
+    }else{
+        pos = comando.find(delimiter3);
+        com.param1 = comando.substr(0, pos);
+        comando.erase(0, pos + delimiter3.length());
     }
-    pos = comando.find(delimiter3);
-    com.param3 = comando.substr(0, pos);
-    comando.erase(0, pos + delimiter3.length());
     return com;
 }
 
@@ -495,133 +555,180 @@ void Menu() {
     try {
         do {
             comandos com = procesar();
-            sintaxis = com.sintaxis;
-            int i = 0;
-            
-            if (sintaxis == "InsertarLinea") {
-                if (insertar_linea_al_final() == 1) {
-                    cout << "OK" << endl;
+            if(com.cant_params == -1){
+                cout << "ERROR, EL COMANDO NO RECIBE ESA CANTIDAD DE PARAMETROS" << endl;
+            }else{
+                sintaxis = com.sintaxis;
+                cout << "Parametro 1:  " << com.param1 << endl;
+                cout << "Parametro 2:  " << com.param2 << endl;
+                cout << "Parametro 3:  " << com.param3 << endl;
+    
+
+                if (sintaxis == "InsertarLinea")
+                {
+                    if (insertar_linea_al_final() == OK)
+                    {
+                        cout << "OK" << endl;
+                    }
+                    else
+                    {
+                        cout << "ERROR" << endl;
+                    }
                 }
-                else {
-                    cout << "ERROR" << endl;
+                else if (sintaxis == "ImprimirTexto")
+                {
+                    imprimir();
                 }
-            }
-            else if (sintaxis == "ImprimirTexto") {
-                imprimir();
-            }
-            else if (sintaxis == "InsertarLineaEnPosicion") {
-                try {
+                else if (sintaxis == "InsertarLineaEnPosicion")
+                {
+                    try
+                    {
+                        int p1 = std::stoi(com.param1);
+                        cout << InsertarLineaEnPosicion(p1);
+                    }
+                    catch (invalid_argument const &e)
+                    {
+                        cout << "ERROR" << endl;
+                    }
+                }
+                else if (sintaxis == "BorrarLinea")
+                {
                     int p1 = std::stoi(com.param1);
-                    cout << InsertarLineaEnPosicion(p1);
+                    if (Borrar_linea(p1) == 1)
+                    {
+                        cout << "OK" << endl;
+                    }
+                    else
+                    {
+                        cout << "ERROR" << endl;
+                    }
                 }
-                catch (invalid_argument const &e) {
-                    cout << "ERROR" << endl;
+                else if (sintaxis == "BorrarTodo")
+                {
+                    if (BorrarTodo() == 1)
+                    {
+                        cout << "OK" << endl;
+                    }
+                    else
+                    {
+                        cout << "ERROR" << endl;
+                    }
                 }
-            }
-            else if (sintaxis == "BorrarLinea") {
-                int p1 = std::stoi(com.param1);
-                if (Borrar_linea(p1) == 1) {
-                    cout << "OK" << endl;
+                else if (sintaxis == "BorrarOcurrenciasPalabraEnTexto")
+                {
+                    if (BorrarOcurrenciasPalabraEnTexto(com.param3) == 1)
+                    {
+                        cout << "OK" << endl;
+                    }
+                    else
+                    {
+                        cout << "ERROR" << endl;
+                    }
                 }
-                else {
-                    cout << "ERROR" << endl;
-                } 
-            }
-            else if (sintaxis == "BorrarTodo") {
-                if (BorrarTodo() == 1) {
-                    cout << "OK" << endl;
+                else if (sintaxis == "ComprimirTexto")
+                {
+                    if (ComprimirTexto() == 1)
+                    {
+                        cout << "OK" << endl;
+                    }
+                    else
+                    {
+                        cout << "ERROR" << endl;
+                    }
                 }
-                else {
-                    cout << "ERROR" << endl;
+                else if (sintaxis == "InsertarPalabra")
+                {
+                    if (getCantParamsComando(com) == 3)
+                    {
+                        try
+                        {
+                            int p1 = std::stoi(com.param1);
+                            int p2 = std::stoi(com.param2);
+                            if (InsertarPalabra(p1, p2, com.param3) == OK)
+                            {
+                                cout << "OK" << endl;
+                            }
+                            else
+                            {
+                                cout << "ERROR" << endl;
+                            }
+                        }
+                        catch (invalid_argument const &e)
+                        {
+                            cout << "ERROR" << endl;
+                        }
+                    }
+                    else
+                    {
+                        cout << "ERROR";
+                    }
                 }
-            }
-            else if (sintaxis == "BorrarOcurrenciasPalabraEnTexto") {
-                if (BorrarOcurrenciasPalabraEnTexto(com.param3) == 1) {
-                    cout << "OK" << endl;
+                else if (sintaxis == "ImprimirLinea")
+                {
+                    int p1 = std::stoi(com.param1);
+                    ImprimirLinea(p1);
                 }
-                else {
-                    cout << "ERROR" << endl;
+                else if (sintaxis == "BorrarPalabra")
+                {
+                    int p1 = std::stoi(com.param1);
+                    int p2 = std::stoi(com.param2);
+                    if (BorrarPalabra(p1, p2) == 1)
+                    {
+                        cout << "OK" << endl;
+                    }
+                    else
+                    {
+                        cout << "ERROR" << endl;
+                    }
                 }
-            }
-            else if (sintaxis == "ComprimirTexto") {
-                if (ComprimirTexto() == 1) {
-                    cout << "OK" << endl;
+                else if (sintaxis == "BorrarOcurrenciasPalabraEnLinea")
+                {
+                    int p1 = std::stoi(com.param1);
+                    if (BorrarOcurrenciasPalabraEnLinea(p1, com.param3) == 1)
+                    {
+                        cout << "OK" << endl;
+                    }
+                    else
+                    {
+                        cout << "ERROR" << endl;
+                    }
                 }
-                else {
-                    cout << "ERROR" << endl;
+                else if (sintaxis == "Help")
+                {
+                    cout << endl;
+                    cout << ANSI_COLOR_GREEN "****SINTAXIS PARA EL CORRECRTO FUNCIONAMIENTO DE LOS COMANDOS:****" ANSI_COLOR_RESET << endl;
+                    cout << endl;
+                    cout << "NombreDelComando(parametro 1,parametro 2,parametro 3)" << endl;
+                    cout << endl;
+                    cout << ANSI_COLOR_BLUE "EN CASO DE QUE EL COMANDO REQUIRA MENOS PARAMETROS:" ANSI_COLOR_RESET << endl;
+                    cout << endl;
+                    cout << "NombreDelComando(parametro 1,parametro 2)" << endl;
+                    cout << "NombreDelComando(parametro)" << endl;
+                    cout << "NombreDelComando()" << endl;
+                    cout << endl;
+                    cout << ANSI_COLOR_RED "ES IMPORTANTE QUE NO HAYA ESPACIOS ENTRE LA COMA Y EL PARAMETRO, LA PALABRA NO DEBE TENER COMILLAS" ANSI_COLOR_RESET << endl;
+                    cout << endl;
+                    cout << ANSI_COLOR_GREEN "****LISTADO DE COMANDOS DISPONIBLES:****" ANSI_COLOR_RESET << endl;
+                    cout << endl;
+                    cout << "InsertarLinea()" << endl;
+                    cout << "InsertarLineaEnPosicion(PosicionLinea)" << endl;
+                    cout << "BorrarLinea(Posicion posicionLinea)" << endl;
+                    cout << "BorrarTodo()" << endl;
+                    cout << "BorrarOcurrenciasPalabraEnTexto(palabraABorrar)" << endl;
+                    cout << "ImprimirTexto()" << endl;
+                    cout << "ComprimirTexto()" << endl;
+                    cout << "InsertarPalabra(posicionLinea, posicionPalabra, palabraAIngresar)" << endl;
+                    cout << "ImprimirLinea(posicionLinea)" << endl;
+                    cout << "BorrarPalabra(posicionLinea, posicionPalabra)" << endl;
+                    cout << "BorrarOcurrenciasPalabraEnLinea(posicionLinea, palabraABorrar)" << endl;
+                    cout << "Help()- Comando para ver ayuda" << endl;
+                    cout << ANSI_COLOR_BLUE "Exit()- finaliza el programa" ANSI_COLOR_RESET << endl;
+                    cout << endl;
                 }
-            }
-            else if (sintaxis == "InsertarPalabra") {
-                int p1 = std::stoi(com.param1);
-                int p2 = std::stoi(com.param2);
-
-                cout << p1 << endl;
-                cout << p2 << endl;
-
-                cout << com.param3;
-                if (InsertarPalabra(p1, p2, com.param3) == OK) {
-                    cout << "OK" << endl;
+                else
+                {
+                    cout << ANSI_COLOR_RED "¡Comando Desconocido!" ANSI_COLOR_RESET << endl;
                 }
-                else {
-                    cout << "ERROR" << endl;
-                }
-            }
-            else if (sintaxis == "ImprimirLinea") {
-                int p1 = std::stoi(com.param1);
-                ImprimirLinea(p1);
-            }
-            else if (sintaxis == "BorrarPalabra") {
-                int p1 = std::stoi(com.param1);
-                int p2 = std::stoi(com.param2);
-                if (BorrarPalabra(p1, p2) == 1) {
-                    cout << "OK" << endl;
-                }
-                else {
-                    cout << "ERROR" << endl;
-                }
-            }
-            else if (sintaxis == "BorrarOcurrenciasPalabraEnLinea" ) {
-                int p1 = std::stoi(com.param1);
-                if (BorrarOcurrenciasPalabraEnLinea(p1, com.param3) == 1) {
-                    cout << "OK" << endl;
-                }
-                else {
-                    cout << "ERROR" << endl;
-                }
-            }
-            else if (sintaxis == "Help") {
-                cout << endl;
-                cout << ANSI_COLOR_GREEN "****SINTAXIS PARA EL CORRECRTO FUNCIONAMIENTO DE LOS COMANDOS:****"  ANSI_COLOR_RESET << endl;
-                cout << endl;
-                cout << "NombreDelComando(parametro 1,parametro 2,parametro 3)" << endl;
-                cout << endl;
-                cout <<ANSI_COLOR_BLUE "EN CASO DE QUE EL COMANDO REQUIRA MENOS PARAMETROS:" ANSI_COLOR_RESET<< endl;
-                cout << endl;
-                cout << "NombreDelComando(parametro 1,parametro 2)" << endl;
-                cout << "NombreDelComando(parametro)" << endl;
-                cout << "NombreDelComando()" << endl;
-                cout << endl;
-                cout <<ANSI_COLOR_RED "ES IMPORTANTE QUE NO HAYA ESPACIOS ENTRE LA COMA Y EL PARAMETRO, LA PALABRA NO DEBE TENER COMILLAS" ANSI_COLOR_RESET << endl;
-                cout << endl;
-                cout <<ANSI_COLOR_GREEN "****LISTADO DE COMANDOS DISPONIBLES:****" ANSI_COLOR_RESET<< endl;
-                cout << endl;
-                cout << "InsertarLinea()" << endl;
-                cout << "InsertarLineaEnPosicion(PosicionLinea)" << endl;
-                cout << "BorrarLinea(Posicion posicionLinea)" << endl;
-                cout << "BorrarTodo()" << endl;
-                cout << "BorrarOcurrenciasPalabraEnTexto(palabraABorrar)" << endl;
-                cout << "ImprimirTexto()" << endl;
-                cout << "ComprimirTexto()" << endl;
-                cout << "InsertarPalabra(posicionLinea, posicionPalabra, palabraAIngresar)" << endl;
-                cout << "ImprimirLinea(posicionLinea)" << endl;
-                cout << "BorrarPalabra(posicionLinea, posicionPalabra)" << endl;
-                cout << "BorrarOcurrenciasPalabraEnLinea(posicionLinea, palabraABorrar)" << endl;
-                cout << "Help()- Comando para ver ayuda" << endl;
-                cout <<ANSI_COLOR_BLUE "Exit()- finaliza el programa" ANSI_COLOR_RESET << endl;
-                cout << endl;
-            }
-            else {
-                cout <<ANSI_COLOR_RED "¡Comando Desconocido!" ANSI_COLOR_RESET<< endl;
             }
         }
         while (sintaxis != "Exit");
@@ -634,18 +741,9 @@ void Menu() {
 
 int main() {
     inicializarDummy();
-    insertar_linea_al_final();
-    InsertarPalabra(1,1,"Rodrigo");
-    InsertarPalabra(1, 2, "Gato");
-    InsertarPalabra(1, 3, "Pijama");
-    InsertarPalabra(1, 3, "Pijamo");
-    InsertarPalabra(2, 2, "Pijamada");
-    InsertarPalabra(1, 1, "Yu gi oh!");
-    InsertarPalabra(2, 1, "Goku");
 
-    imprimir();
 
-    //Menu();
+    Menu();
 
 
 }
