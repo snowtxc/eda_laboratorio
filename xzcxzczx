@@ -1,0 +1,26 @@
+[33m5c91f06[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m fix/ParseoFunciones
+[33m76f8045[m[33m ([m[1;31morigin/master[m[33m)[m fix/InsertarPalabra
+[33m5c99f15[m Version 1.0
+[33m178462c[m Nueva funcion
+[33m1625c3d[m Menu
+[33m0848e99[m Menu implementado
+[33m9543a32[m feature/ComprimirTexto
+[33mb106ecb[m feature/InsertarPalabraYDesplazar
+[33m1047203[m Nueva funcion
+[33m703f6cd[m Nueva funcion
+[33m45d5106[m Nuevas funciones complementarias utiles y modificacion de tipo de retorno en todas las funciones
+[33m4584ac2[m feature/BorrarOcurrenciasPalabraEnLinea
+[33m3e9bac9[m feature/Insertar_Linea
+[33m6ba66cd[m feature/BorrarTodo
+[33m478d216[m Avance funcion insertar palabra
+[33mf30abc7[m Nueva funcion
+[33m5843b5c[m Avance en desarollo de la funcion: IngresarPalabra
+[33m063168c[m add incomplete funcion insertar palabra
+[33m38dc02b[m variable cant_pal
+[33m921843c[m Funcion añadida
+[33mac5ce62[m fix lista global
+[33m62a2ba5[m Nueva Funcion
+[33mfdac032[m fix funcion insertarEnLinea
+[33m0265345[m Implementacion Insertar Linea
+[33mf15cff9[m define structures
+[33m0aaff52[m proyecto inicial

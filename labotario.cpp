@@ -138,22 +138,7 @@ ListaLinea createLine() {
 
 
 
-int getCantParamsComando(comandos c){
-    int cont = 0;
-    if (c.param1 != ""){
-        cont ++;
-    }
 
-    if  (c.param2 != "" )
-    {
-        cont++;
-    }
-    if (c.param3 != "")
-    {
-        cont++;
-    }
-    return cont;
-}
 TipoRetorno insertar_linea_al_final () {
     ListaLinea newline = new nodoLinea;
     newline->sig = NULL;
@@ -638,7 +623,7 @@ void Menu() {
                 }
                 else if (sintaxis == "InsertarPalabra")
                 {
-                    if (getCantParamsComando(com) == 3)
+                    if (com.cant_params == 3)
                     {
                         try
                         {
